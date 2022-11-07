@@ -150,7 +150,7 @@ static void cleanup_timecode( timecode_t *timecode )
 static int error_message( const char* message, ... )
 {
     REFRESH_CONSOLE;
-    eprintf( "Error: " );
+    eprintf( "エラー: " );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -161,7 +161,7 @@ static int error_message( const char* message, ... )
 static int warning_message( const char* message, ... )
 {
     REFRESH_CONSOLE;
-    eprintf( "Warning: " );
+    eprintf( "警告: " );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -242,17 +242,17 @@ static int get_summaries( root_t *input, track_t *track )
 {
     track->num_summaries = lsmash_count_summary( input->root, track->track_ID );
     if( track->num_summaries == 0 )
-        return ERROR_MSG( "Failed to get find valid summaries.\n" );
+        return ERROR_MSG( "有効なサマリの取得に失敗しました。\n" );
     track->summaries = lsmash_malloc( track->num_summaries * sizeof(summary_t) );
     if( !track->summaries )
-        return ERROR_MSG( "failed to alloc input summaries.\n" );
+        return ERROR_MSG( "入力サマリの割当に失敗しました。\n" );
     memset( track->summaries, 0, track->num_summaries * sizeof(summary_t) );
     for( uint32_t j = 0; j < track->num_summaries; j++ )
     {
         lsmash_summary_t *summary = lsmash_get_summary( input->root, track->track_ID, j + 1 );
         if( !summary )
         {
-            WARNING_MSG( "failed to get a summary.\n" );
+            WARNING_MSG( "サマリの取得に失敗しました。\n" );
             continue;
         }
         track->summaries[j].summary = summary;
@@ -264,31 +264,31 @@ static int get_summaries( root_t *input, track_t *track )
 static int get_movie( root_t *input, char *input_name )
 {
     if( !strcmp( input_name, "-" ) )
-        return ERROR_MSG( "Standard input not supported.\n" );
+        return ERROR_MSG( "標準入力はサポートされていません。\n" );
     input->root = lsmash_create_root();
     if( !input->root )
-        return ERROR_MSG( "failed to create a ROOT for an input file.\n" );
+        return ERROR_MSG( "入力ファイルのROOT作成に失敗しました。\n" );
     file_t *in_file = &input->file;
     if( lsmash_open_file( input_name, 1, &in_file->param ) < 0 )
-        return ERROR_MSG( "failed to open an input file.\n" );
+        return ERROR_MSG( "入力ファイルのオープンに失敗しました。\n" );
     in_file->fh = lsmash_set_file( input->root, &in_file->param );
     if( !in_file->fh )
-        return ERROR_MSG( "failed to add an input file into a ROOT.\n" );
+        return ERROR_MSG( "入力ファイルをROOTに追加できませんでした。\n" );
     if( lsmash_read_file( in_file->fh, &in_file->param ) < 0 )
-        return ERROR_MSG( "failed to read an input file\n" );
+        return ERROR_MSG( "入力ファイルの読み込みに失敗しました。\n" );
     movie_t *movie = &in_file->movie;
     movie->num_itunes_metadata = lsmash_count_itunes_metadata( input->root );
     if( movie->num_itunes_metadata )
     {
         movie->itunes_metadata = lsmash_malloc( movie->num_itunes_metadata * sizeof(lsmash_itunes_metadata_t) );
         if( !movie->itunes_metadata )
-            return ERROR_MSG( "failed to alloc iTunes metadata.\n" );
+            return ERROR_MSG( "iTunesメタデータの割り当てに失敗しました。\n" );
         uint32_t itunes_metadata_count = 0;
         for( uint32_t i = 1; i <= movie->num_itunes_metadata; i++ )
         {
             if( get_itunes_metadata( input->root, i, &movie->itunes_metadata[itunes_metadata_count] ) )
             {
-                WARNING_MSG( "failed to get an iTunes metadata.\n" );
+                WARNING_MSG( "iTunesメタデータの取得に失敗しました。\n" );
                 continue;
             }
             ++itunes_metadata_count;
@@ -302,41 +302,41 @@ static int get_movie( root_t *input, char *input_name )
     /* Create tracks. */
     track_t *track = movie->track = lsmash_malloc( movie->num_tracks * sizeof(track_t) );
     if( !track )
-        return ERROR_MSG( "Failed to alloc input tracks.\n" );
+        return ERROR_MSG( "入力トラックの割り当てに失敗しました。\n" );
     memset( track, 0, movie->num_tracks * sizeof(track_t) );
     for( uint32_t i = 0; i < movie->num_tracks; i++ )
     {
         track[i].track_ID = lsmash_get_track_ID( input->root, i + 1 );
         if( !track[i].track_ID )
-            return ERROR_MSG( "Failed to get track_ID.\n" );
+            return ERROR_MSG( "track_IDの入手に失敗しました。\n" );
     }
     for( uint32_t i = 0; i < movie->num_tracks; i++ )
     {
         lsmash_initialize_track_parameters( &track[i].track_param );
         if( lsmash_get_track_parameters( input->root, track[i].track_ID, &track[i].track_param ) )
         {
-            WARNING_MSG( "failed to get track parameters.\n" );
+            WARNING_MSG( "トラックパラメータの取得に失敗しました。\n" );
             continue;
         }
         lsmash_initialize_media_parameters( &track[i].media_param );
         if( lsmash_get_media_parameters( input->root, track[i].track_ID, &track[i].media_param ) )
         {
-            WARNING_MSG( "failed to get media parameters.\n" );
+            WARNING_MSG( "メディアパラメータの取得に失敗しました。\n" );
             continue;
         }
         if( lsmash_construct_timeline( input->root, track[i].track_ID ) )
         {
-            WARNING_MSG( "failed to construct timeline.\n" );
+            WARNING_MSG( "タイムラインの構築に失敗しました。\n" );
             continue;
         }
         if( lsmash_get_last_sample_delta_from_media_timeline( input->root, track[i].track_ID, &track[i].last_sample_delta ) )
         {
-            WARNING_MSG( "failed to get the last sample delta.\n" );
+            WARNING_MSG( "最終サンプルデルタの取得に失敗しました。\n" );
             continue;
         }
         if( get_summaries( input, &track[i] ) )
         {
-            WARNING_MSG( "failed to get valid summaries.\n" );
+            WARNING_MSG( "有効なサマリの取得に失敗しました。\n" );
             continue;
         }
         track[i].active                = 1;
@@ -409,8 +409,8 @@ static double correct_fps( double fps, timecode_t *timecode )
         fps_den = i * timecode->media_timebase;
         fps_num = round( fps_den * fps_sig ) * exponent;
         if( fps_num > UINT32_MAX )
-            return ERROR_MSG( "framerate correction failed.\n"
-                              "Specify an appropriate timebase manually or remake timecode file.\n" );
+            return ERROR_MSG( "フレームレート補完に失敗しました。\n"
+                              "適切なタイムベースを手動で指定するか、タイムコードを再作成してください。\n" );
         if( fabs( ((double)fps_num / fps_den) / exponent - fps_sig ) < DOUBLE_EPSILON )
             break;
         ++i;
@@ -440,8 +440,8 @@ static int try_matroska_timescale( double *fps_array, timecode_t *timecode, uint
                                  ? get_gcd( timecode->media_timebase, fps_den )
                                  : fps_den;
         if( timecode->media_timebase > UINT32_MAX || !timecode->media_timebase )
-            return ERROR_MSG( "Automatic media timescale generation failed.\n"
-                              "Specify media timescale manually.\n" );
+            return ERROR_MSG( "自動的なメディアタイムスケール生成に失敗しました。\n"
+                              "手動でタイムスケールを設定してください。\n" );
     }
     return 0;
 }
@@ -459,7 +459,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
     int tcfv;
     int ret = fscanf( timecode->file, "# timecode format v%d", &tcfv );
     if( ret != 1 || (tcfv != 1 && tcfv != 2) )
-        return ERROR_MSG( "Unsupported timecode format\n" );
+        return ERROR_MSG( "このタイムラインコードには対応していません。\n" );
     char buff[256];
     double *timecode_array = NULL;
     if( tcfv == 1 )
@@ -472,14 +472,14 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
                 continue;
             if( sscanf( buff, "assume %lf", &assume_fps ) != 1
              && sscanf( buff, "Assume %lf", &assume_fps ) != 1 )
-                return ERROR_MSG( "Assumed fps not found\n" );
+                return ERROR_MSG( "推定されたフレームレートがありません。\n" );
             break;
         }
         if( assume_fps <= 0 )
-            return ERROR_MSG( "Invalid assumed fps\n" );
+            return ERROR_MSG( "不正な推定フレームレートです。\n" );
         int64_t file_pos = lsmash_ftell( timecode->file );
         if( file_pos < 0 )
-            return ERROR_MSG( "Failed to tell the postion of input timecode file.\n" );
+            return ERROR_MSG( "入力ファイルのタイムラインコードの位置の伝達に失敗しました。\n" );
         /* Check whether valid or not and count number of sequences. */
         uint32_t num_sequences = 0;
         int64_t  start, end;
@@ -491,26 +491,26 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
                 continue;
             ret = sscanf( buff, "%"SCNd64",%"SCNd64",%lf", &start, &end, &sequence_fps );
             if( ret != 3 && ret != EOF )
-                return ERROR_MSG( "Invalid input timecode file\n" );
+                return ERROR_MSG( "入力タイムコードファイルが不正です。\n" );
             if( start > end || start <= prev_start || end <= prev_end || sequence_fps <= 0 )
-                return ERROR_MSG( "Invalid input timecode file\n" );
+                return ERROR_MSG( "入力タイムコードファイルが不正です。\n" );
             prev_start = start;
             prev_end = end;
             if( timecode->auto_media_timescale || timecode->auto_media_timebase )
                 ++num_sequences;
         }
         if( lsmash_fseek( timecode->file, file_pos, SEEK_SET ) != 0 )
-            return ERROR_MSG( "Failed to seek input timecode file.\n" );
+            return ERROR_MSG( "入力タイムコードのシークに失敗しました。\n" );
         /* Preparation storing timecodes. */
         double *fps_array = lsmash_malloc( ((timecode->auto_media_timescale || timecode->auto_media_timebase) * num_sequences + 1) * sizeof(double) );
         if( !fps_array )
-            return ERROR_MSG( "Failed to allocate fps array\n" );
+            return ERROR_MSG( "フレームレートアレイの割り当てに失敗しました。\n" );
         double corrected_assume_fps = correct_fps( assume_fps, timecode );
         if( corrected_assume_fps < 0 )
-            FAILED_PARSE_TIMECODE( "Failed to correct the assumed framerate\n" );
+            FAILED_PARSE_TIMECODE( "推定フレームレートの補完に失敗しました。\n" );
         timecode_array = lsmash_malloc( sample_count * sizeof(double) );
         if( !timecode_array )
-            FAILED_PARSE_TIMECODE( "Failed to alloc timecodes\n" );
+            FAILED_PARSE_TIMECODE( "タイムコードの割り当てに失敗しました。\n" );
         timecode_array[0] = 0;
         num_sequences = 0;
         uint32_t i = 0;
@@ -529,7 +529,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
                     fps_array[num_sequences++] = sequence_fps;
                 sequence_fps = correct_fps( sequence_fps, timecode );
                 if( sequence_fps < 0 )
-                    FAILED_PARSE_TIMECODE( "Failed to correct the framerate of a sequence.\n" );
+                    FAILED_PARSE_TIMECODE( "シーケンスのフレームレート補完に失敗しました。\n" );
                 for( i = start; i <= end && i < sample_count - 1; i++ )
                     timecode_array[i + 1] = timecode_array[i] + 1 / sequence_fps;
             }
@@ -544,9 +544,9 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
             double exponent;
             double assume_fps_sig, sequence_fps_sig;
             if( try_matroska_timescale( fps_array, timecode, num_sequences + 1 ) < 0 )
-                FAILED_PARSE_TIMECODE( "Failed to try matroska timescale.\n" );
+                FAILED_PARSE_TIMECODE( "Matroskaタイムスケールの試行に失敗しました。\n" );
             if( lsmash_fseek( timecode->file, file_pos, SEEK_SET ) != 0 )
-                FAILED_PARSE_TIMECODE( "Failed to seek input timecode file.\n" );
+                FAILED_PARSE_TIMECODE( "入力タイムコードのシークに失敗しました。\n" );
             assume_fps_sig = sigexp10( assume_fps, &exponent );
             corrected_assume_fps = MATROSKA_TIMESCALE / ( round( MATROSKA_TIMESCALE / assume_fps_sig ) / exponent );
             for( i = 0; i < sample_count - 1 && fgets( buff, sizeof(buff), timecode->file ); )
@@ -573,7 +573,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
         uint32_t num_timecodes = 0;
         int64_t file_pos = lsmash_ftell( timecode->file );
         if( file_pos < 0 )
-            return ERROR_MSG( "Failed to tell the postion of input timecode file.\n" );
+            return ERROR_MSG( "入力タイムコードファイルの位置の伝達に失敗しました。\n" );
         while( fgets( buff, sizeof(buff), timecode->file ) )
         {
             if( SKIP_LINE_CHARACTER( buff[0] ) )
@@ -582,21 +582,21 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
                 {
                     file_pos = lsmash_ftell( timecode->file );
                     if( file_pos < 0 )
-                        return ERROR_MSG( "Failed to tell the postion of input timecode file.\n" );
+                        return ERROR_MSG( "入力タイムコードファイルの位置の伝達に失敗しました。\n" );
                 }
                 continue;
             }
             ++num_timecodes;
         }
         if( !num_timecodes )
-            return ERROR_MSG( "No timecodes!\n" );
+            return ERROR_MSG( "タイムコードがありません。\n" );
         if( sample_count > num_timecodes )
-            return ERROR_MSG( "Lack number of timecodes.\n" );
+            return ERROR_MSG( "タイムコードが不足しています。\n" );
         if( lsmash_fseek( timecode->file, file_pos, SEEK_SET ) != 0 )
-            return ERROR_MSG( "Failed to seek input timecode file.\n" );
+            return ERROR_MSG( "入力タイムコードのシークに失敗しました。\n" );
         timecode_array = lsmash_malloc( sample_count * sizeof(uint64_t) );
         if( !timecode_array )
-            return ERROR_MSG( "Failed to alloc timecodes.\n" );
+            return ERROR_MSG( "タイムコードの割り当てに失敗しました。\n" );
         uint32_t i = 0;
         if( fgets( buff, sizeof(buff), timecode->file ) )
         {
@@ -604,7 +604,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
             if( ret != 1 )
             {
                 lsmash_free( timecode_array );
-                return ERROR_MSG( "Invalid timecode number: 0\n" );
+                return ERROR_MSG( "不正なタイムコード番号: 0\n" );
             }
             timecode_array[i++] *= 1e-3;        /* Timescale of timecode format v2 is 1000. */
             while( i < sample_count && fgets( buff, sizeof(buff), timecode->file ) )
@@ -616,7 +616,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
                 if( ret != 1 || timecode_array[i] <= timecode_array[i - 1] )
                 {
                     lsmash_free( timecode_array );
-                    return ERROR_MSG( "Invalid input timecode.\n" );
+                    return ERROR_MSG( "不正な入力タイムコードです。\n" );
                 }
                 ++i;
             }
@@ -624,14 +624,14 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
         if( i < sample_count )
         {
             lsmash_free( timecode_array );
-            return ERROR_MSG( "Failed to get timecodes.\n" );
+            return ERROR_MSG( "タイムコードの取得に失敗しました。\n" );
         }
         /* Generate media timescale automatically if needed. */
         if( sample_count != 1 && timecode->auto_media_timescale )
         {
             double *fps_array = lsmash_malloc( (sample_count - 1) * sizeof(double) );
             if( !fps_array )
-                FAILED_PARSE_TIMECODE( "Failed to allocate fps array\n" );
+                FAILED_PARSE_TIMECODE( "フレームレートアレイの割り当てに失敗しました。\n" );
             for( i = 0; i < sample_count - 1; i++ )
             {
                 fps_array[i] = 1 / (timecode_array[i + 1] - timecode_array[i]);
@@ -662,7 +662,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
             }
             if( timecode->auto_media_timebase && !timecode->auto_media_timescale
              && try_matroska_timescale( fps_array, timecode, sample_count - 1 ) < 0 )
-                FAILED_PARSE_TIMECODE( "Failed to try matroska timescale.\n" );
+                FAILED_PARSE_TIMECODE( "Matroskaタイムスケールの試行に失敗しました。\n" );
             lsmash_free( fps_array );
         }
     }
@@ -675,8 +675,8 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
     else if( timecode->media_timescale > UINT32_MAX || !timecode->media_timescale )
     {
         lsmash_free( timecode_array );
-        return ERROR_MSG( "Failed to generate media timescale automatically.\n"
-                          "Specify an appropriate media timescale manually.\n" );
+        return ERROR_MSG( "タイムスケールを自動生成できませんでした。\n"
+                          "適切なタイムスケールを手動設定してください。\n" );
     }
     uint32_t timescale = timecode->media_timescale;
     uint32_t timebase  = timecode->media_timebase;
@@ -686,7 +686,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
     if( !timecode->ts )
     {
         lsmash_free( timecode_array );
-        return ERROR_MSG( "Failed to allocate timestamps.\n" );
+        return ERROR_MSG( "タイムスタンプの割り当てに失敗しました。\n" );
     }
     timecode->ts[0] = 0;
     for( uint32_t i = 1; i < sample_count; i++ )
@@ -697,7 +697,7 @@ static int parse_timecode( timecode_t *timecode, uint32_t sample_count )
             lsmash_free( timecode_array );
             lsmash_free( timecode->ts );
             timecode->ts = NULL;
-            return ERROR_MSG( "Invalid timecode.\n" );
+            return ERROR_MSG( "不正なタイムコードです。\n" );
         }
     }
     lsmash_free( timecode_array );
@@ -715,10 +715,10 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
     uint32_t track_ID = in_track->track_ID;
     lsmash_media_ts_list_t ts_list;
     if( lsmash_get_media_timestamps( input->root, track_ID, &ts_list ) )
-        return ERROR_MSG( "Failed to get media timestamps.\n" );
+        return ERROR_MSG( "メディアのタイムスタンプの取得に失敗しました。\n" );
     uint64_t timebase = get_media_timebase( &ts_list );
     if( !timebase )
-        return ERROR_MSG( "Failed to get media timebase.\n" );
+        return ERROR_MSG( "メディアのタイムベースの取得に失敗しました。\n" );
     lsmash_media_ts_t *timestamp = ts_list.timestamp;
     uint32_t sample_count = ts_list.sample_count;
     uint32_t orig_timebase = timebase;
@@ -750,14 +750,14 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
         timecode->media_timescale = timecode->auto_media_timescale ? 0 : timescale;
         timecode->media_timebase  = timebase;
         if( parse_timecode( timecode, sample_count ) )
-            return ERROR_MSG( "Failed to parse timecode file.\n" );
+            return ERROR_MSG( "タイムコードファイルのパースに失敗しました。\n" );
         timescale = timecode->media_timescale;
         timebase  = timecode->media_timebase;
     }
     /* Get maximum composition sample delay for DTS generation. */
     uint32_t sample_delay;
     if( lsmash_get_max_sample_delay( &ts_list, &sample_delay ) )
-        return ERROR_MSG( "Failed to get maximum composition sample delay.\n" );
+        return ERROR_MSG( "最大の構成サンプルディレイの取得に失敗しました。\n" );
     if( sample_delay )      /* Reorder composition order. */
         lsmash_sort_timestamps_composition_order( &ts_list );
     if( !timecode->file )
@@ -765,13 +765,13 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
         /* Genarate timestamps timescale converted. */
         timecode->ts = lsmash_malloc( sample_count * sizeof(uint64_t) );
         if( !timecode->ts )
-            return ERROR_MSG( "Failed to alloc timestamps\n" );
+            return ERROR_MSG( "タイムスタンプの割り当てに失敗しました。\n" );
         for( uint32_t i = 0; i < sample_count; i++ )
         {
             timecode->ts[i] = (timestamp[i].cts - timestamp[0].cts) / orig_timebase;
             timecode->ts[i] = ((uint64_t)(timecode->ts[i] * timebase_convert_multiplier + 0.5)) * timebase;
             if( i && (timecode->ts[i] <= timecode->ts[i - 1]) )
-                return ERROR_MSG( "Invalid timescale conversion.\n" );
+                return ERROR_MSG( "タイムスケール変換が不正です。\n" );
         }
     }
     if( sample_delay )
@@ -791,7 +791,7 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
         lsmash_sort_timestamps_decoding_order( &ts_list );
         uint64_t *prev_reordered_cts = lsmash_malloc( sample_delay * sizeof(uint64_t) );
         if( !prev_reordered_cts )
-            return ERROR_MSG( "Failed to allocate the previous reordered CTS array.\n" );
+            return ERROR_MSG( "前の並び替え済みCTSアレイの割り当てに失敗しました。\n" );
         for( uint32_t i = 0; i <= sample_delay; i++ )
         {
             if( !opt->dts_compression )
@@ -802,7 +802,7 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
                 if( i && (timestamp[i].dts <= timestamp[i - 1].dts) )
                 {
                     lsmash_free( prev_reordered_cts );
-                    return ERROR_MSG( "Failed to do DTS compression.\n" );
+                    return ERROR_MSG( "DTS圧縮に失敗しました。\n" );
                 }
             }
             prev_reordered_cts[ i % sample_delay ] = timecode->ts[i] + sample_delay_time;
@@ -826,7 +826,7 @@ static int edit_media_timeline( root_t *input, timecode_t *timecode, opt_t *opt 
         timecode->duration = in_track->last_sample_delta = UINT32_MAX;
     in_track->media_param.timescale = timescale;
     if( lsmash_set_media_timestamps( input->root, track_ID, &ts_list ) )
-        return ERROR_MSG( "Failed to set media timestamps.\n" );
+        return ERROR_MSG( "メディアタイムスタンプの設定に失敗しました。\n" );
     lsmash_delete_media_timestamps( &ts_list );
     return 0;
 }
@@ -870,35 +870,36 @@ static int check_white_brand( lsmash_brand_type brand )
 
 static int moov_to_front_callback( void *param, uint64_t written_movie_size, uint64_t total_movie_size )
 {
-    eprintf( "Finalizing: [%5.2lf%%]\r", ((double)written_movie_size / total_movie_size) * 100.0 );
+    eprintf( "ファイナライズ中: [%5.2lf%%]\r", ((double)written_movie_size / total_movie_size) * 100.0 );
     return 0;
 }
 
 static void display_version( void )
 {
     eprintf( "\n"
-             "L-SMASH isom/mov timeline editor rev%s  %s\n"
-             "Built on %s %s\n"
+             "L-SMASH isom/mov タイムラインエディタ rev%s  %s\n"
+             "ビルド日時: %s %s\n"
              "Copyright (C) 2011-2017 L-SMASH project\n",
-             LSMASH_REV, LSMASH_GIT_HASH, __DATE__, __TIME__ );
+             LSMASH_REV, LSMASH_GIT_HASH, __DATE__, __TIME__
+             "翻訳: BitMaster206\n" );
 }
 
 static void display_help( void )
 {
     display_version();
     eprintf( "\n"
-             "Usage: timelineeditor [options] input output\n"
-             "  options:\n"
-             "    --help                       Display help\n"
-             "    --version                    Display version information\n"
-             "    --track           <integer>  Specify track number to edit [1]\n"
-             "    --timecode        <string>   Specify timecode file to edit timeline\n"
-             "    --media-timescale <integer>  Specify media timescale to convert\n"
-             "    --media-timebase  <integer>  Specify media timebase to convert\n"
-             "    --skip            <rational> Skip start of media presentation in arbitrary units\n"
-             "    --delay           <rational> Insert blank clip before actual media presentation in arbitrary units\n"
-             "    --dts-compression            Eliminate composition delay with DTS hack\n"
-             "                                 Multiply media timescale and timebase automatically\n" );
+             "使用方法: timelineeditor [オプション] 入力 出力\n"
+             "  オプション:\n"
+             "    --help                       ヘルプを表示\n"
+             "    --version                    バージョン情報を表示\n"
+             "    --track           <整数>　　　編集するトラック番号を指定 [1]\n"
+             "    --timecode        <文字列>  　タイムラインの編集に使うタイムコードを指定\n"
+             "    --media-timescale <整数>  　　変換に使うタイムスケールを指定\n"
+             "    --media-timebase  <整数>  　　変換に使うメディアタイムベースを指定\n"
+             "    --skip            <rational> 任意の単位でメディアプレゼンテーションの開始をスキップ\n"
+             "    --delay           <rational> 任意の単位でメディアプレゼンテーション前の空白クリップを挿入\n"
+             "    --dts-compression            DTSハックで構成ディレイを削除します\n"
+             "                                 自動的にメディアタイムベースとタイムスケールを数倍にします\n" );
 }
 
 int main( int argc, char *argv[] )
@@ -947,28 +948,28 @@ int main( int argc, char *argv[] )
         {
             opt.track_number = atoi( argv[++argn] );
             if( !opt.track_number )
-                return TIMELINEEDITOR_ERR( "Invalid track number.\n" );
+                return TIMELINEEDITOR_ERR( "不正なトラックナンバーです。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--timecode" ) )
         {
             timecode.file = lsmash_fopen( argv[++argn], "rb" );
             if( !timecode.file )
-                return TIMELINEEDITOR_ERR( "Failed to open timecode file.\n" );
+                return TIMELINEEDITOR_ERR( "タイムコードファイルのオープンに失敗しました。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--media-timescale" ) )
         {
             opt.media_timescale = atoi( argv[++argn] );
             if( !opt.media_timescale )
-                return TIMELINEEDITOR_ERR( "Invalid media timescale.\n" );
+                return TIMELINEEDITOR_ERR( "メディアタイムスケールが不正です。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--media-timebase" ) )
         {
             opt.media_timebase = atoi( argv[++argn] );
             if( !opt.media_timebase )
-                return TIMELINEEDITOR_ERR( "Invalid media timebase.\n" );
+                return TIMELINEEDITOR_ERR( "メディアタイムベースが不正です。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--skip" ) )
@@ -980,7 +981,7 @@ int main( int argc, char *argv[] )
                 opt.skip_duration_den = 1;
             }
             if( opt.skip_duration_num == 0 )
-                return TIMELINEEDITOR_ERR( "Invalid skip duration.\n" );
+                return TIMELINEEDITOR_ERR( "スキップ継続時間が不正です。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--delay" ) )
@@ -992,7 +993,7 @@ int main( int argc, char *argv[] )
                 opt.empty_delay_den = 1;
             }
             if( opt.empty_delay_num == 0 )
-                return TIMELINEEDITOR_ERR( "Invalid delay time.\n" );
+                return TIMELINEEDITOR_ERR( "ディレイ時間が不正です。\n" );
             ++argn;
         }
         else if( !strcasecmp( argv[argn], "--dts-compression" ) )
@@ -1001,23 +1002,23 @@ int main( int argc, char *argv[] )
             ++argn;
         }
         else
-            return TIMELINEEDITOR_ERR( "Invalid option.\n" );
+            return TIMELINEEDITOR_ERR( "不正なオプションです。\n" );
     }
     if( argn > argc - 2 )
-        return TIMELINEEDITOR_ERR( "Invalid arguments.\n" );
+        return TIMELINEEDITOR_ERR( "不正な引数です。\n" );
     /* Get input movies. */
     if( get_movie( &input, argv[argn++] ) )
-        return TIMELINEEDITOR_ERR( "Failed to get input movie.\n" );
+        return TIMELINEEDITOR_ERR( "入力ムービーの取得に失敗しました。\n" );
     movie_t *in_movie = &input.file.movie;
     if( opt.track_number && (opt.track_number > in_movie->num_tracks) )
-        return TIMELINEEDITOR_ERR( "Invalid track number.\n" );
+        return TIMELINEEDITOR_ERR( "トラック番号が不正です。\n" );
     /* Create output movie. */
     file_t *out_file = &output.file;
     output.root = lsmash_create_root();
     if( !output.root )
-        return TIMELINEEDITOR_ERR( "failed to create a ROOT for an output file.\n" );
+        return TIMELINEEDITOR_ERR( "出力ファイルのROOTの作成に失敗しました。\n" );
     if( lsmash_open_file( argv[argn], 0, &out_file->param ) < 0 )
-        return TIMELINEEDITOR_ERR( "failed to open an output file.\n" );
+        return TIMELINEEDITOR_ERR( "出力ファイルのオープンに失敗しました。\n" );
     file_t *in_file = &input.file;
     out_file->param.major_brand         = in_file->param.major_brand;
     out_file->param.minor_version       = in_file->param.minor_version;
@@ -1048,7 +1049,7 @@ int main( int argc, char *argv[] )
     }
     out_file->fh = lsmash_set_file( output.root, &out_file->param );
     if( !out_file->fh )
-        return TIMELINEEDITOR_ERR( "failed to add an output file into a ROOT.\n" );
+        return TIMELINEEDITOR_ERR( "出力ファイルをROOTに追加できませんでした。\n" );
     if( out_file->param.brands != in_file->param.brands )
         lsmash_freep( &out_file->param.brands );
     /* Set movie parameters. */
@@ -1057,21 +1058,21 @@ int main( int argc, char *argv[] )
     if( in_movie->num_tracks == 1 )
         out_movie->param.timescale = in_movie->track[0].media_param.timescale;
     if( lsmash_set_movie_parameters( output.root, &out_movie->param ) )
-        return TIMELINEEDITOR_ERR( "Failed to set output movie parameters.\n" );
+        return TIMELINEEDITOR_ERR( "出力映像のパラメータ設定に失敗しました。\n" );
     /* Set iTunes metadata. */
     for( uint32_t i = 0; i < in_movie->num_itunes_metadata; i++ )
         if( lsmash_set_itunes_metadata( output.root, in_movie->itunes_metadata[i] ) )
         {
-            WARNING_MSG( "failed to set an iTunes metadata.\n" );
+            WARNING_MSG( "iTunesメタデータの設定に失敗しました。\n" );
             continue;
         }
     /* Create tracks of the output movie. */
     out_movie->track = lsmash_malloc( in_movie->num_tracks * sizeof(track_t) );
     if( !out_movie->track )
-        return TIMELINEEDITOR_ERR( "Failed to alloc output tracks.\n" );
+        return TIMELINEEDITOR_ERR( "出力トラックの割付に失敗しました。\n" );
     /* Edit timeline. */
     if( edit_media_timeline( &input, &timecode, &opt ) )
-        return TIMELINEEDITOR_ERR( "Failed to edit timeline.\n" );
+        return TIMELINEEDITOR_ERR( "タイムラインの編集に失敗しました。\n" );
     out_movie->num_tracks           = in_movie->num_tracks;
     out_movie->current_track_number = 1;
     for( uint32_t i = 0; i < in_movie->num_tracks; i++ )
@@ -1085,19 +1086,19 @@ int main( int argc, char *argv[] )
         track_t *out_track = &out_movie->track[i];
         out_track->summary_remap = lsmash_malloc( in_track->num_summaries * sizeof(uint32_t) );
         if( !out_track->summary_remap )
-            return TIMELINEEDITOR_ERR( "failed to create summary mapping for a track.\n" );
+            return TIMELINEEDITOR_ERR( "トラックのサマリマッピングに失敗しました。\n" );
         memset( out_track->summary_remap, 0, in_track->num_summaries * sizeof(uint32_t) );
         out_track->track_ID = lsmash_create_track( output.root, in_track->media_param.handler_type );
         if( !out_track->track_ID )
-            return TIMELINEEDITOR_ERR( "Failed to create a track.\n" );
+            return TIMELINEEDITOR_ERR( "トラックの作成に失敗しました。\n" );
         /* Copy track and media parameters except for track_ID. */
         out_track->track_param = in_track->track_param;
         out_track->media_param = in_track->media_param;
         out_track->track_param.track_ID = out_track->track_ID;
         if( lsmash_set_track_parameters( output.root, out_track->track_ID, &out_track->track_param ) )
-            return TIMELINEEDITOR_ERR( "Failed to set track parameters.\n" );
+            return TIMELINEEDITOR_ERR( "トラックパラメータの設定に失敗しました。\n" );
         if( lsmash_set_media_parameters( output.root, out_track->track_ID, &out_track->media_param ) )
-            return TIMELINEEDITOR_ERR( "Failed to set media parameters.\n" );
+            return TIMELINEEDITOR_ERR( "メディアパラメータの設定に失敗しました。\n" );
         uint32_t valid_summary_count = 0;
         for( uint32_t k = 0; k < in_track->num_summaries; k++ )
         {
@@ -1109,7 +1110,7 @@ int main( int argc, char *argv[] )
             lsmash_summary_t *summary = in_track->summaries[k].summary;
             if( lsmash_add_sample_entry( output.root, out_track->track_ID, summary ) == 0 )
             {
-                WARNING_MSG( "failed to append a summary.\n" );
+                WARNING_MSG( "サマリの付加に失敗しました。\n" );
                 lsmash_cleanup_summary( summary );
                 in_track->summaries[k].summary = NULL;
                 in_track->summaries[k].active  = 0;
@@ -1119,7 +1120,7 @@ int main( int argc, char *argv[] )
             out_track->summary_remap[k] = ++valid_summary_count;
         }
         if( valid_summary_count == 0 )
-            return TIMELINEEDITOR_ERR( "failed to append all summaries.\n" );
+            return TIMELINEEDITOR_ERR( "全サマリの付加に失敗しました。\n" );
         out_track->last_sample_delta           = in_track->last_sample_delta;
         out_track->current_sample_number       = 1;
         out_track->reach_end_of_media_timeline = 0;
@@ -1145,7 +1146,7 @@ int main( int argc, char *argv[] )
             if( lsmash_get_dts_from_media_timeline( input.root, in_track_ID, in_track->current_sample_number, &dts ) )
             {
                 if( lsmash_check_sample_existence_in_media_timeline( input.root, in_track_ID, in_track->current_sample_number ) )
-                    return TIMELINEEDITOR_ERR( "Failed to get the DTS.\n" );
+                    return TIMELINEEDITOR_ERR( "DTSの設定に失敗しました。\n" );
                 else
                 {
                     in_track->reach_end_of_media_timeline = 1;
@@ -1160,7 +1161,7 @@ int main( int argc, char *argv[] )
                 /* Get an actual sample data from a track in an input movie. */
                 lsmash_sample_t *sample = lsmash_get_sample_from_media_timeline( input.root, in_track_ID, in_track->current_sample_number );
                 if( !sample )
-                    return TIMELINEEDITOR_ERR( "Failed to get sample.\n" );
+                    return TIMELINEEDITOR_ERR( "サンプルの取得に失敗しました。\n" );
                 sample->index = sample->index > in_track->num_summaries ? in_track->num_summaries
                               : sample->index == 0 ? 1
                               : sample->index;
@@ -1172,7 +1173,7 @@ int main( int argc, char *argv[] )
                     if( lsmash_append_sample( output.root, out_track_ID, sample ) )
                     {
                         lsmash_delete_sample( sample );
-                        return TIMELINEEDITOR_ERR( "Failed to append a sample.\n" );
+                        return TIMELINEEDITOR_ERR( "ファイルのアペンドに失敗しました。\n" );
                     }
                     largest_dts = LSMASH_MAX( largest_dts, (double)dts / input_media_timescale );
                     total_media_size += sample_size;
@@ -1182,7 +1183,7 @@ int main( int argc, char *argv[] )
                     if( (total_media_size >> 22) > progress_pos )
                     {
                         progress_pos = total_media_size >> 22;
-                        eprintf( "Importing: %"PRIu64" bytes\r", total_media_size );
+                        eprintf( "インポート中: %"PRIu64" bytes\r", total_media_size );
                     }
                 }
             }
@@ -1197,11 +1198,11 @@ int main( int argc, char *argv[] )
     }
     for( uint32_t i = 0; i < out_movie->num_tracks; i++ )
         if( lsmash_flush_pooled_samples( output.root, out_movie->track[i].track_ID, out_movie->track[i].last_sample_delta ) )
-            return TIMELINEEDITOR_ERR( "Failed to flush samples.\n" );
+            return TIMELINEEDITOR_ERR( "サンプルのフラッシュに失敗しました。\n" );
     /* Copy timeline maps. */
     for( uint32_t i = 0; i < out_movie->num_tracks; i++ )
         if( lsmash_copy_timeline_map( output.root, out_movie->track[i].track_ID, input.root, in_movie->track[i].track_ID ) )
-            return TIMELINEEDITOR_ERR( "Failed to copy a timeline map.\n" );
+            return TIMELINEEDITOR_ERR( "タイムラインマップのコピーに失敗しました。\n" );
     /* Edit timeline map. */
     if( argc > 3 )
     {
@@ -1212,7 +1213,7 @@ int main( int argc, char *argv[] )
         uint64_t empty_delay     = timecode.empty_delay + (uint64_t)((double)((uint64_t)opt.empty_delay_num * media_timescale) / opt.empty_delay_den + 0.5);
         uint64_t duration        = timecode.duration + empty_delay;
         if( lsmash_delete_explicit_timeline_map( output.root, track_ID ) )
-            return TIMELINEEDITOR_ERR( "Failed to delete explicit timeline maps.\n" );
+            return TIMELINEEDITOR_ERR( "明示的タイムラインマップの削除に失敗しました。\n" );
         if( empty_delay )
         {
             lsmash_edit_t empty_edit;
@@ -1220,7 +1221,7 @@ int main( int argc, char *argv[] )
             empty_edit.start_time = ISOM_EDIT_MODE_EMPTY;
             empty_edit.rate       = ISOM_EDIT_MODE_NORMAL;
             if( lsmash_create_explicit_timeline_map( output.root, track_ID, empty_edit ) )
-                return TIMELINEEDITOR_ERR( "Failed to create a empty duration.\n" );
+                return TIMELINEEDITOR_ERR( "空の継続時間の生成に失敗しました。\n" );
             duration  = ((double)duration / media_timescale) * movie_timescale;
             duration -= empty_edit.duration;
         }
@@ -1231,7 +1232,7 @@ int main( int argc, char *argv[] )
         edit.start_time = timecode.composition_delay + (uint64_t)((double)((uint64_t)opt.skip_duration_num * media_timescale) / opt.skip_duration_den + 0.5);
         edit.rate       = ISOM_EDIT_MODE_NORMAL;
         if( lsmash_create_explicit_timeline_map( output.root, track_ID, edit ) )
-            return TIMELINEEDITOR_ERR( "Failed to create a explicit timeline map.\n" );
+            return TIMELINEEDITOR_ERR( "明示的タイムラインマップの作成に失敗しました。\n" );
     }
     /* Finish muxing. */
     lsmash_adhoc_remux_t moov_to_front;
@@ -1241,10 +1242,10 @@ int main( int argc, char *argv[] )
     eprintf( "                                                                               \r" );
     if( lsmash_finish_movie( output.root, &moov_to_front )
      || lsmash_write_lsmash_indicator( output.root ) )
-        return TIMELINEEDITOR_ERR( "Failed to finish output movie.\n" );
+        return TIMELINEEDITOR_ERR( "出力映像のフィニッシュに失敗しました。\n" );
     cleanup_root( io.input );
     cleanup_root( io.output );
     cleanup_timecode( io.timecode );
-    eprintf( "Timeline editing completed!                                                    \n" );
+    eprintf( "タイムライン編集が完了しました!                                                    \n" );
     return 0;
 }

@@ -37,7 +37,7 @@ static void display_version( void )
 {
     eprintf( "\n"
              "L-SMASH isom/mov structual analyzer rev%s  %s\n"
-             "Built on %s %s\n"
+             "ビルド日時: %s %s\n"
              "Copyright (C) 2010-2017 L-SMASH project\n",
              LSMASH_REV, LSMASH_GIT_HASH, __DATE__, __TIME__ );
 }
@@ -46,13 +46,13 @@ static void display_help( void )
 {
     display_version();
     eprintf( "\n"
-             "Usage: boxdumper [option] input\n"
-             "  options:\n"
-             "    --help         Display help\n"
-             "    --version      Display version information\n"
-             "    --box          Dump box structure\n"
-             "    --chapter      Extract chapter list\n"
-             "    --timestamp    Dump media timestamps\n" );
+             "使用法: boxdumper [option] input\n"
+             "  オプション:\n"
+             "    --help         ヘルプを表示\n"
+             "    --version      バージョン情報を表示\n"
+             "    --box          ボックス構造をダンプ\n"
+             "    --chapter      チャプターリストを展開\n"
+             "    --timestamp    メディアのタイムスタンプをダンプ\n" );
 }
 
 static int boxdumper_error
@@ -115,29 +115,29 @@ int main( int argc, char *argv[] )
     lsmash_root_t *root = lsmash_create_root();
     if( !root )
     {
-        fprintf( stderr, "Failed to create a ROOT.\n" );
+        fprintf( stderr, "ROOTの作成に失敗しました。\n" );
         return -1;
     }
     lsmash_file_parameters_t file_param = { 0 };
     if( lsmash_open_file( filename, 1, &file_param ) < 0 )
-        return BOXDUMPER_ERR( "Failed to open an input file.\n" );
+        return BOXDUMPER_ERR( "入力ファイルを開けませんでした。\n" );
     if( dump_box )
         file_param.mode |= LSMASH_FILE_MODE_DUMP;
     lsmash_file_t *file = lsmash_set_file( root, &file_param );
     if( !file )
-        return BOXDUMPER_ERR( "Failed to add a file into a ROOT.\n" );
+        return BOXDUMPER_ERR( "ROOTにファイルを追加できませんでした。\n" );
     if( lsmash_read_file( file, &file_param ) < 0 )
-        return BOXDUMPER_ERR( "Failed to read a file\n" );
+        return BOXDUMPER_ERR( "ファイルを読み込めませんでした。\n" );
     /* Dump the input file. */
     if( chapter )
     {
         if( lsmash_print_chapter_list( root ) )
-            return BOXDUMPER_ERR( "Failed to extract chapter.\n" );
+            return BOXDUMPER_ERR( "チャプターを展開できませんでした。\n" );
     }
     else if( dump_box )
     {
         if( lsmash_print_movie( root, "-" ) )
-            return BOXDUMPER_ERR( "Failed to dump box structure.\n" );
+            return BOXDUMPER_ERR( "ボックス構造をダンプできませんでした。\n" );
     }
     else
     {
@@ -149,21 +149,21 @@ int main( int argc, char *argv[] )
         {
             uint32_t track_ID = lsmash_get_track_ID( root, track_number );
             if( !track_ID )
-                return BOXDUMPER_ERR( "Failed to get track_ID.\n" );
+                return BOXDUMPER_ERR( "track_IDの取得に失敗しました。\n" );
             lsmash_media_parameters_t media_param;
             lsmash_initialize_media_parameters( &media_param );
             if( lsmash_get_media_parameters( root, track_ID, &media_param ) )
-                return BOXDUMPER_ERR( "Failed to get media parameters.\n" );
+                return BOXDUMPER_ERR( "メディアパラメータの取得に失敗しました。\n" );
             if( lsmash_construct_timeline( root, track_ID ) )
-                return BOXDUMPER_ERR( "Failed to construct timeline.\n" );
+                return BOXDUMPER_ERR( "タイムラインの構築に失敗しました。\n" );
             uint32_t timeline_shift;
             if( lsmash_get_composition_to_decode_shift_from_media_timeline( root, track_ID, &timeline_shift ) )
-                return BOXDUMPER_ERR( "Failed to get timestamps.\n" );
+                return BOXDUMPER_ERR( "タイムスタンプを取得できませんでした。\n" );
             lsmash_media_ts_list_t ts_list;
             if( lsmash_get_media_timestamps( root, track_ID, &ts_list ) )
-                return BOXDUMPER_ERR( "Failed to get timestamps.\n" );
+                return BOXDUMPER_ERR( "タイムスタンプを取得できませんでした。\n" );
             fprintf( stdout, "track_ID: %"PRIu32"\n", track_ID );
-            fprintf( stdout, "Media timescale: %"PRIu32"\n", media_param.timescale );
+            fprintf( stdout, "メディアタイムスケール: %"PRIu32"\n", media_param.timescale );
             lsmash_media_ts_t *ts_array = ts_list.timestamp;
             if( !ts_array )
             {

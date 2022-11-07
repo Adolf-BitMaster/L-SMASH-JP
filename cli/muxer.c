@@ -228,9 +228,10 @@ static int error_message( const char *message, ... )
 static void display_version( void )
 {
     eprintf( "\n"
-             "L-SMASH isom/mov multiplexer rev%s  %s\n"
-             "Built on %s %s\n"
-             "Copyright (C) 2010-2017 L-SMASH project\n",
+             "L-SMASH isom/mov マルチプレクサー rev%s  %s\n"
+             "ビルド日時: %s %s\n"
+             "Copyright (C) 2010-2017 L-SMASH project\n"
+             "日本語訳: BitMaster206\n",
              LSMASH_REV, LSMASH_GIT_HASH, __DATE__, __TIME__ );
 }
 
@@ -249,14 +250,14 @@ static void display_help( void )
              "                              最初のものは最良のものとして認識される\n"
              "    --isom-version <整数>  ISO Base Mediaとのバージョン互換性を指定\n"
              "    --shift-timeline          タイムラインシフトの構成を有効化\n"
-             "    --chapter <string>        ファイルからチャプターを生成\n"
+             "    --chapter <文字列>        ファイルからチャプターを生成\n"
              "    --chpl-with-bom           UTF-8 BOMをチャプターリストの文字列に追加(試験的)\n"
              "    --chapter-track <整数> チャプターの適応先トラックを指定\n"
-             "                              出典チャプターを有効化しているときに、この設定を使用できます。\n"
+             "                              参照チャプターを有効化しているときに、この設定を使用できます。\n"
              "                              無効な場合、自動的に1に設定されます。\n"
              "    --copyright-notice <引数> 著作権表記を言語で(またはそれを用いらず)表記 (後者の文字列)\n"
              "                                  <引数> は <文字列> または <文字列>/<文字列>\n"
-             "    --language <string>       出力トラックのデフォルト言語を指定\n"
+             "    --language <文字列>       出力トラックのデフォルト言語を指定\n"
              "                              このオプションはトラックオプションにより上書きされます。\n"
              "    --compact-size-table      可能ならサンプルサイズテーブルを圧縮\n"
              "    --movie-timescale <整数>  映像のタイムスケールを指定\n"
@@ -267,33 +268,33 @@ static void display_help( void )
              "    disable                   このトラックを無効化\n"
              "    fps=<引数>                 フレームレートを指定\n"
              "                                  <引数> は <整数> または <整数>/<整数>\n"
-             "    language=<string>         メディアの言語を指定\n"
-             "    alternate-group=<integer> どちらか一方のグループを指定\n"
-             "    encoder-delay=<integer>   オーディオエンコーダの遅延を明示\n"
+             "    language=<文字列>         メディアの言語を指定\n"
+             "    alternate-group=<整数> どちらか一方のグループを指定\n"
+             "    encoder-delay=<整数>   オーディオエンコーダの遅延を明示\n"
              "    copyright=<arg>           著作権表記を言語で(またはそれを用いらず)表記 (後者の文字列)\n"
              "                                  <引数> は <文字列> または <文字列>/<文字列>\n"
-             "    handler=<string>          メディアハンドラの名前を指定\n"
+             "    handler=<文字列>          メディアハンドラの名前を指定\n"
              "    sbr                       下位互換性を有すSBR明示シグナルモードを有効化\n"
-             "    par=<integer>:<integer>   最初のシークエンスのアスペクト比を指定\n"
+             "    par=<整数>:<整数>   最初のシークエンスのアスペクト比を指定\n"
              "                              メディアストリーム内でこれを変更しないでください。\n"
              "トラックオプションの使用方法:\n"
              "    -i input?[track_option1],[track_option2]...\n"
              "\n"
              "iTunes メタデータ:\n"
-             "    --album-name <string>     アルバム名\n"
-             "    --artist <string>         アーティスト\n"
-             "    --comment <string>        ユーザーコメント\n"
-             "    --release-date <string>   リリース日 (YYYY-MM-DD)\n"
-             "    --encoder <string>        レコードをエンコードした人・企業\n"
-             "    --genre <string>          ジャンル\n"
-             "    --lyrics <string>         歌詞\n"
-             "    --title <string>          曲名またはトラックタイトル\n"
-             "    --composer <string>       作曲者\n"
-             "    --album-artist <string>   アルバムアーティスト (曲ごとにアーティストが異なる時)\n"
-             "    --copyright <string>      著作権\n"
-             "    --description <string>    説明\n"
-             "    --grouping <string>       グループ\n"
-             "    --tempo <integer>         拍数/分\n" );
+             "    --album-name <文字列>     アルバム名\n"
+             "    --artist <文字列>         アーティスト\n"
+             "    --comment <文字列>        ユーザーコメント\n"
+             "    --release-date <文字列>   リリース日 (YYYY-MM-DD)\n"
+             "    --encoder <文字列>        レコードをエンコードした人・企業\n"
+             "    --genre <文字列>          ジャンル\n"
+             "    --lyrics <文字列>         歌詞\n"
+             "    --title <文字列>          曲名またはトラックタイトル\n"
+             "    --composer <文字列>       作曲者\n"
+             "    --album-artist <文字列>   アルバムアーティスト (曲ごとにアーティストが異なる時)\n"
+             "    --copyright <文字列>      著作権\n"
+             "    --description <文字列>    説明\n"
+             "    --grouping <文字列>       グループ\n"
+             "    --tempo <整数>         拍数/分\n" );
 }
 
 static int muxer_usage_error( void )
@@ -322,7 +323,7 @@ static int setup_isom_version( option_t *opt )
 {
     add_brand( opt, ISOM_BRAND_TYPE_ISOM );
     if( opt->isom_version > 6 )
-        return ERROR_MSG( "unknown ISO Base Media version.\n" );
+        return ERROR_MSG( "未知のISOメディアブランドバージョンです。\n" );
 #define SET_ISOM_VERSION( version ) \
     if( opt->isom_version >= version ) \
         add_brand( opt, ISOM_BRAND_TYPE_ISO##version )
@@ -346,7 +347,7 @@ static int decide_brands( option_t *opt )
         add_brand( opt, ISOM_BRAND_TYPE_MP41 );
         add_brand( opt, ISOM_BRAND_TYPE_ISOM );
         opt->isom = 1;
-        eprintf( "MP4 muxing mode\n" );
+        eprintf( "MP$ muxモード\n" );
         return setup_isom_version( opt );
     }
     opt->major_brand = opt->brands[0];      /* Pick the first brand as major brand. */
@@ -383,24 +384,24 @@ static int decide_brands( option_t *opt )
     {
         case ISOM_BRAND_TYPE_MP42 :
             opt->minor_version = 0x00000000;
-            eprintf( "MP4 muxing mode\n" );
+            eprintf( "MP4 muxモード\n" );
             break;
         case ISOM_BRAND_TYPE_M4A :
         case ISOM_BRAND_TYPE_M4V :
             opt->minor_version = 0x00000000;
-            eprintf( "iTunes MP4 muxing mode\n" );
+            eprintf( "iTunes MP4 muxモード\n" );
             break;
         case ISOM_BRAND_TYPE_3GP6 :
             opt->minor_version = 0x00000000;    /* means, 3gp(3gp6) 6.0.0 : "6" is not included in minor_version. */
-            eprintf( "3GPP muxing mode\n" );
+            eprintf( "3GPP muxモード\n" );
             break;
         case ISOM_BRAND_TYPE_3G2A :
             opt->minor_version = 0x00010000;    /* means, 3g2(3g2a) 1.0.0 : a == 1 */
-            eprintf( "3GPP2 muxing mode\n" );
+            eprintf( "3GPP2 muxモード\n" );
             break;
         case ISOM_BRAND_TYPE_QT :
             opt->minor_version = 0x00000000;    /* We don't know exact version of the spec to use QTFF features. */
-            eprintf( "QuickTime file format muxing mode\n" );
+            eprintf( "QuickTime ファイルフォーマット muxモード\n" );
             break;
         default :
             break;
@@ -409,7 +410,7 @@ static int decide_brands( option_t *opt )
     if( opt->isom )
         setup_isom_version( opt );
     if( opt->num_of_brands > MAX_NUM_OF_BRANDS )
-        return ERROR_MSG( "exceed the maximum number of brands we can deal with.\n" );
+        return ERROR_MSG( "割り振れるブランドの数を超過しています。\n" );
     return 0;
 }
 
@@ -440,14 +441,14 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->num_of_inputs + 1 > MAX_NUM_OF_INPUTS )
-                return ERROR_MSG( "exceed the maximum number of input files.\n" );
+                return ERROR_MSG( "入力できるファイルの最大数を超過しています。\n" );
             input_t *input = &muxer->input[opt->num_of_inputs];
             input_option_t *input_movie_opt = &input->opt;
             char *p = argv[i];
             while( *p )
                 input_movie_opt->num_of_track_delimiters += (*p++ == '?');
             if( input_movie_opt->num_of_track_delimiters > MAX_NUM_OF_TRACKS )
-                return ERROR_MSG( "you specified options to exceed the maximum number of tracks per input files.\n" );
+                return ERROR_MSG( "入力ファイルのチャプター数を超過するオプションが指定されました。\n" );
             input->file_name = strtok( argv[i], "?" );
             input_movie_opt->whole_track_option = strtok( NULL, "" );
             if( input_movie_opt->num_of_track_delimiters )
@@ -475,7 +476,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->interleave )
-                return ERROR_MSG( "you specified --interleave twice.\n" );
+                return ERROR_MSG( "--interleaveオプションが2回指定されました。\n" );
             opt->interleave = atoi( argv[i] );
         }
         else if( !strcasecmp( argv[i], "--file-format" ) )
@@ -504,9 +505,9 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
                     {
                         int ret = add_brand( opt, file_format_list[j].brand_4cc );
                         if( ret == -2 )
-                            return ERROR_MSG( "you specified same output file format twice.\n" );
+                            return ERROR_MSG( "同じ出力ファイル形式が2回指定されました。\n" );
                         else if( ret == -1 )
-                            return ERROR_MSG( "exceed the maximum number of brands we can deal with.\n" );
+                            return ERROR_MSG( "割り振れるブランド数を超過しています。\n" );
                         break;
                     }
                 if( !file_format_list[j].file_format )
@@ -517,7 +518,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->isom_version )
-                return ERROR_MSG( "you specified --isom-version twice.\n" );
+                return ERROR_MSG( "--isom-versionオプションが2回指定されました。\n" );
             opt->isom_version = atoi( argv[i] );
         }
         else if( !strcasecmp( argv[i], "--shift-timeline" ) )
@@ -534,7 +535,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
             CHECK_NEXT_ARG;
             opt->chap_track = atoi( argv[i] );
             if( !opt->chap_track )
-                return ERROR_MSG( "%s is an invalid track number.\n", argv[i] );
+                return ERROR_MSG( "%sは不正なトラックナンバーです。\n", argv[i] );
         }
         else if( !strcasecmp( argv[i], "--chpl-with-bom" ) )
             opt->add_bom_to_chpl = 1;
@@ -542,7 +543,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->copyright_notice )
-                return ERROR_MSG( "you specified --copyright-notice twice.\n" );
+                return ERROR_MSG( "--copyright-noticeオプションが2回指定されました。\n" );
             opt->copyright_notice = argv[i];
             char *language = opt->copyright_notice;
             while( *language )
@@ -560,7 +561,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->movie_timescale )
-                return ERROR_MSG( "you specified --movie-timescale twice.\n" );
+                return ERROR_MSG( "--movie-timescaleオプションが2回指定されました。\n" );
             opt->movie_timescale = atoi( argv[i] );
         }
         /* iTunes metadata */
@@ -569,7 +570,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         { \
             CHECK_NEXT_ARG; \
             if( opt->itunes_metadata.value ) \
-                return ERROR_MSG( "you specified --"#argument" twice.\n" ); \
+                return ERROR_MSG( "--"#argument"オプションが2回指定されました。\n" ); \
             opt->itunes_metadata.value = argv[i]; \
         }
         CHECK_ITUNES_METADATA_ARG_STRING( album-name,   album_name )
@@ -590,7 +591,7 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         {
             CHECK_NEXT_ARG;
             if( opt->itunes_metadata.beats_per_minute )
-                return ERROR_MSG( "you specified --tempo twice.\n" );
+                return ERROR_MSG( "--tempoが2回指定されました。\n" );
             opt->itunes_metadata.beats_per_minute = atoi( argv[i] );
         }
         else if( !strcasecmp( argv[i], "--language" ) )
@@ -600,15 +601,15 @@ static int parse_global_options( int argc, char **argv, muxer_t *muxer )
         }
 #undef CHECK_NEXT_ARG
         else
-            return ERROR_MSG( "you specified invalid option: %s.\n", argv[i] );
+            return ERROR_MSG( "不正なオプションが指定されました。: %s.\n", argv[i] );
         ++i;
     }
     if( !muxer->output.file.name )
-        return ERROR_MSG( "output file name is not specified.\n" );
+        return ERROR_MSG( "出力ファイル名が指定されていません。\n" );
     if( decide_brands( opt ) )
-        return ERROR_MSG( "failed to set up output file format.\n" );
+        return ERROR_MSG( "出力ファイル形式のセットアップに失敗しました。\n" );
     if( opt->timeline_shift && !opt->qtff && opt->isom_version < 4 )
-        return ERROR_MSG( "timeline shift requires --file-format mov, or --isom-version 4 or later.\n" );
+        return ERROR_MSG( "タイムラインシフトには --file-format mov オプション、または --isom-version 4 以降の指定が必須です。\n" );
     muxer->num_of_inputs = opt->num_of_inputs;
     return 0;
 }
@@ -642,7 +643,7 @@ static int parse_track_options( input_t *input )
 #endif
         {
             if( strchr( track_option, '=' ) != strrchr( track_option, '=' ) )
-                return ERROR_MSG( "multiple equal signs inside one track option in %s\n", track_option );
+                return ERROR_MSG( "トラックオプション内に複数のイコール記号が含まれています。: %s\n", track_option );
             if( strstr( track_option, "disable" ) )
                 track_opt->disable = 1;
             else if( strstr( track_option, "alternate-group=" ) )
@@ -702,7 +703,7 @@ static int parse_track_options( input_t *input )
                 }
             }
             else
-                return ERROR_MSG( "unknown track option %s\n", track_option );
+                return ERROR_MSG( "未知のトラックオプションです。: %s\n", track_option );
         }
     }
     return 0;
@@ -712,7 +713,7 @@ static void display_codec_name( lsmash_codec_type_t codec_type, uint32_t track_n
 {
 #define DISPLAY_CODEC_NAME( codec, codec_name ) \
     else if( lsmash_check_codec_type_identical( codec_type, codec ) ) \
-        eprintf( "Track %"PRIu32": "#codec_name"\n", track_number )
+        eprintf( "トラック %"PRIu32": "#codec_name"\n", track_number )
     if( 0 );
     DISPLAY_CODEC_NAME( ISOM_CODEC_TYPE_AVC1_VIDEO, H.264 Advanced Video Coding );
     DISPLAY_CODEC_NAME( ISOM_CODEC_TYPE_HVC1_VIDEO, H.265 High Efficiency Video Coding );
@@ -742,20 +743,20 @@ static int open_input_files( muxer_t *muxer )
         /* Initialize importer framework. */
         lsmash_root_t *root = lsmash_create_root();
         if( !root )
-            return ERROR_MSG( "failed to create a ROOT for input file.\n" );
+            return ERROR_MSG( "入力ファイルのROOTの作成に失敗しました。\n" );
         input->root = root;
         input->importer = lsmash_importer_open( root, input->file_name, "auto" );
         if( !input->importer )
-            return ERROR_MSG( "failed to open input file.\n" );
+            return ERROR_MSG( "入力ファイルを開けませんでした。\n" );
         input->num_of_tracks = lsmash_importer_get_track_count( input->importer );
         if( input->num_of_tracks == 0 )
-            return ERROR_MSG( "there is no valid track in input file.\n" );
+            return ERROR_MSG( "入力ファイルには適切なトラックがありません。\n" );
         if( opt->default_language )
              for( int i = 0; i < input->num_of_tracks; i ++ )
                  input->track[i].opt.ISO_language = opt->default_language;
         /* Parse track options */
         if( parse_track_options( input ) )
-            return ERROR_MSG( "failed to parse track options.\n" );
+            return ERROR_MSG( "トラックオプションのパースに失敗しました。\n" );
         /* Activate tracks by CODEC type. */
         for( input->current_track_number = 1;
              input->current_track_number <= input->num_of_tracks;
@@ -770,7 +771,7 @@ static int open_input_files( muxer_t *muxer )
             }
             in_track->summary = lsmash_duplicate_summary( input->importer, input->current_track_number );
             if( !in_track->summary )
-                return ERROR_MSG( "failed to get input summary.\n" );
+                return ERROR_MSG( "入力サマリーの取得に失敗しました。\n" );
             /* Check codec type. */
             lsmash_codec_type_t codec_type = in_track->summary->sample_type;
             in_track->active = 1;
@@ -782,12 +783,12 @@ static int open_input_files( muxer_t *muxer )
             else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_HVC1_VIDEO ) )
             {
                 if( !opt->isom && opt->qtff )
-                    return ERROR_MSG( "the input seems HEVC, at present available only for ISO Base Media file format.\n" );
+                    return ERROR_MSG( "HEVC入力ファイルはISOベースメディアフォーマットのみで利用可能です。\n" );
             }
             else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_VC_1_VIDEO ) )
             {
                 if( !opt->isom && opt->qtff )
-                    return ERROR_MSG( "the input seems VC-1, at present available only for ISO Base Media file format.\n" );
+                    return ERROR_MSG( "VC-1入力ファイルはISOベースメディアフォーマットのみで利用可能です。\n" );
             }
             else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_MP4A_AUDIO )
                   || lsmash_check_codec_type_identical( codec_type,   QT_CODEC_TYPE_MP4A_AUDIO ) )
@@ -796,7 +797,7 @@ static int open_input_files( muxer_t *muxer )
                   || lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_EC_3_AUDIO ) )
             {
                 if( !opt->isom && opt->qtff )
-                    return ERROR_MSG( "the input seems (Enhanced) AC-3, at present available only for ISO Base Media file format.\n" );
+                    return ERROR_MSG( "(エンハンスド)AC-3入力ファイルはISOベースメディアフォーマットのみで利用可能です。\n" );
                 add_brand( opt, ISOM_BRAND_TYPE_DBY1 );
             }
             else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_DTSC_AUDIO )
@@ -806,18 +807,18 @@ static int open_input_files( muxer_t *muxer )
                   || lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_DTSX_AUDIO ) )
             {
                 if( !opt->isom && opt->qtff )
-                    return ERROR_MSG( "the input seems DTS(-HD) Audio, at present available only for ISO Base Media file format.\n" );
+                    return ERROR_MSG( "DTS(HD)入力ファイルはISOベースメディアフォーマットのみで利用可能です。\n" );
             }
             else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_SAWB_AUDIO )
                   || lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_SAMR_AUDIO ) )
             {
                 if( !opt->brand_3gx )
-                    return ERROR_MSG( "the input seems AMR-NB/WB, available for 3GPP(2) file format.\n" );
+                    return ERROR_MSG( "AMR-NB/WB入力ファイルは3GPP(2)で利用可能です。\n" );
             }
             else if( lsmash_check_codec_type_identical( codec_type, QT_CODEC_TYPE_LPCM_AUDIO ) )
             {
                 if( opt->isom && !opt->qtff )
-                    return ERROR_MSG( "the input seems Uncompressed Audio, at present available only for QuickTime file format.\n" );
+                    return ERROR_MSG( "非圧縮オーディオはQuicktimeファイルフォーマットのみで利用可能です。\n" );
                 in_track->lpcm = 1;
             }
             else
@@ -835,7 +836,7 @@ static int open_input_files( muxer_t *muxer )
         out_movie->num_of_tracks += input->num_of_active_tracks;
     }
     if( out_movie->num_of_tracks == 0 )
-        return ERROR_MSG( "there is no media that can be stored in output movie.\n" );
+        return ERROR_MSG( "出力ムービーにいかなるファイルも入れることができません。\n" );
     return 0;
 }
 
@@ -876,14 +877,14 @@ static int prepare_output( muxer_t *muxer )
     /* Allocate output tracks. */
     out_movie->track = lsmash_malloc_zero( out_movie->num_of_tracks * sizeof(output_track_t) );
     if( !out_movie->track )
-        return ERROR_MSG( "failed to allocate output tracks.\n" );
+        return ERROR_MSG( "出力トラックの割付に失敗しました。\n" );
     /* Initialize L-SMASH muxer */
     output->root = lsmash_create_root();
     if( !output->root )
-        return ERROR_MSG( "failed to create a ROOT for output file.\n" );
+        return ERROR_MSG( "出力ファイルにROOTを作成できませんでした。\n" );
     lsmash_file_parameters_t *file_param = &out_file->param;
     if( lsmash_open_file( out_file->name, 0, file_param ) < 0 )
-        return ERROR_MSG( "failed to open an output file.\n" );
+        return ERROR_MSG( "出力ファイルの作成に失敗しました。\n" );
     file_param->major_brand   = opt->major_brand;
     file_param->brands        = opt->brands;
     file_param->brand_count   = opt->num_of_brands;
@@ -892,19 +893,19 @@ static int prepare_output( muxer_t *muxer )
         file_param->max_chunk_duration = opt->interleave * 1e-3;
     out_file->fh = lsmash_set_file( output->root, file_param );
     if( !out_file->fh )
-        return ERROR_MSG( "failed to add an output file into a ROOT.\n" );
+        return ERROR_MSG( "出力ファイルをROOTに追加できませんでした。\n" );
     /* Initialize movie */
     lsmash_movie_parameters_t movie_param;
     lsmash_initialize_movie_parameters( &movie_param );
     if( opt->movie_timescale )
         movie_param.timescale = opt->movie_timescale;
     if( lsmash_set_movie_parameters( output->root, &movie_param ) )
-        return ERROR_MSG( "failed to set movie parameters.\n" );
+        return ERROR_MSG( "映像パラメータの設定に失敗しました。\n" );
     if( opt->copyright_notice
      && lsmash_set_copyright( output->root, 0, opt->copyright_language, opt->copyright_notice ) )
-        return ERROR_MSG( "failed to set a copyright notice for the entire movie.\n" );
+        return ERROR_MSG( "著作権表示をすべての映像に付加できませんでした。\n" );
     if( set_itunes_metadata( output, opt ) )
-        return ERROR_MSG( "failed to set iTunes metadata.\n" );
+        return ERROR_MSG( "iTunesメタデータの設定に失敗しました。\n" );
     out_movie->current_track_number = 1;
     for( uint32_t current_input_number = 1; current_input_number <= muxer->num_of_inputs; current_input_number++ )
     {
@@ -937,7 +938,7 @@ static int prepare_output( muxer_t *muxer )
                 {
                     out_track->track_ID = lsmash_create_track( output->root, ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK );
                     if( !out_track->track_ID )
-                        return ERROR_MSG( "failed to create a track.\n" );
+                        return ERROR_MSG( "トラックの作成に失敗しました。\n" );
                     lsmash_video_summary_t *summary = (lsmash_video_summary_t *)in_track->summary;
                     uint64_t display_width  = (uint64_t)summary->width  << 16;
                     uint64_t display_height = (uint64_t)summary->height << 16;
@@ -1012,16 +1013,16 @@ static int prepare_output( muxer_t *muxer )
                 {
                     out_track->track_ID = lsmash_create_track( output->root, ISOM_MEDIA_HANDLER_TYPE_AUDIO_TRACK );
                     if( !out_track->track_ID )
-                        return ERROR_MSG( "failed to create a track.\n" );
+                        return ERROR_MSG( "トラックの作成に失敗しました。\n" );
                     lsmash_audio_summary_t *summary = (lsmash_audio_summary_t *)in_track->summary;
                     if( track_opt->sbr )
                     {
                         /* Check if explicit SBR is valid or not. */
                         if( lsmash_mp4sys_get_object_type_indication( (lsmash_summary_t *)summary ) != MP4SYS_OBJECT_TYPE_Audio_ISO_14496_3 )
-                            return ERROR_MSG( "--sbr is only valid with MPEG-4 Audio.\n" );
+                            return ERROR_MSG( "--sbrはMP4オーディオ使用時のみ利用可能です。\n" );
                         summary->sbr_mode = MP4A_AAC_SBR_BACKWARD_COMPATIBLE;
                         if( lsmash_setup_AudioSpecificConfig( summary ) )
-                            return ERROR_MSG( "failed to set SBR mode.\n" );
+                            return ERROR_MSG( "SBRモードの設定に失敗しました。\n" );
                     }
                     media_param.timescale          = summary->frequency;
                     media_param.media_handler_name = track_opt->handler_name ? track_opt->handler_name : "L-SMASH Audio Handler";
@@ -1033,7 +1034,7 @@ static int prepare_output( muxer_t *muxer )
                     break;
                 }
                 default :
-                    return ERROR_MSG( "not supported stream type.\n" );
+                    return ERROR_MSG( "このストリームタイプには対応していません。\n" );
             }
             /* Reset the movie timescale in order to match the media timescale if only one track is there. */
             if( muxer->num_of_inputs        == 1
@@ -1042,22 +1043,22 @@ static int prepare_output( muxer_t *muxer )
             {
                 movie_param.timescale = media_param.timescale;
                 if( lsmash_set_movie_parameters( output->root, &movie_param ) )
-                    return ERROR_MSG( "failed to set movie parameters.\n" );
+                    return ERROR_MSG( "映像パラメータの設定に失敗しました。\n" );
             }
             /* Set copyright information. */
             if( track_opt->copyright_notice
              && lsmash_set_copyright( output->root, out_track->track_ID, track_opt->copyright_language, track_opt->copyright_notice ) )
-                return ERROR_MSG( "failed to set a copyright notice.\n" );
+                return ERROR_MSG( "著作権表記の設定に失敗しました。\n" );
             /* Set track parameters. */
             if( lsmash_set_track_parameters( output->root, out_track->track_ID, &track_param ) )
-                return ERROR_MSG( "failed to set track parameters.\n" );
+                return ERROR_MSG( "トラックパラメータの設定に失敗しました。\n" );
             /* Set media parameters. */
             if( lsmash_set_media_parameters( output->root, out_track->track_ID, &media_param ) )
-                return ERROR_MSG( "failed to set media parameters.\n" );
+                return ERROR_MSG( "メディアパラメータの設定に失敗しました。\n" );
             out_track->summary      = in_track->summary;
             out_track->sample_entry = lsmash_add_sample_entry( output->root, out_track->track_ID, out_track->summary );
             if( !out_track->sample_entry )
-                return ERROR_MSG( "failed to add sample description entry.\n" );
+                return ERROR_MSG( "説明エントリの追加に失敗しました。\n" );
             out_track->active = 1;
             ++ out_movie->current_track_number;
         }
@@ -1101,12 +1102,12 @@ static int do_mux( muxer_t *muxer )
                 /* lsmash_importer_get_access_unit() returns 1 if there're any changes in stream's properties. */
                 int ret = lsmash_importer_get_access_unit( input->importer, input->current_track_number, &sample );
                 if( ret == LSMASH_ERR_MEMORY_ALLOC )
-                    return ERROR_MSG( "failed to alloc memory for buffer.\n" );
+                    return ERROR_MSG( "バッファの確保に失敗しました。\n" );
                 else if( ret <= -1 )
                 {
                     lsmash_delete_sample( sample );
-                    ERROR_MSG( "failed to get a frame from input file. Maybe corrupted.\n"
-                               "Aborting muxing operation and trying to let output be valid file.\n" );
+                    ERROR_MSG( "フレームの取得に失敗しました。おそらく破損しています。\n"
+                               "処理を中断し、有効なファイルを再指定してください。\n" );
                     break;
                 }
                 else if( ret == 1 ) /* a change of stream's properties */
@@ -1137,7 +1138,7 @@ static int do_mux( muxer_t *muxer )
                         out_track->sample_entry = lsmash_add_sample_entry( output->root, out_track->track_ID, out_track->summary );
                         if( out_track->sample_entry == 0 )
                         {
-                            ERROR_MSG( "failed to add sample description entry.\n" );
+                            ERROR_MSG( "サンプル説明エントリの追加に失敗しました。\n" );
                             break;
                         }
                     }
@@ -1150,7 +1151,7 @@ static int do_mux( muxer_t *muxer )
                     out_track->active = 0;
                     out_track->last_delta = lsmash_importer_get_last_delta( input->importer, input->current_track_number );
                     if( out_track->last_delta == 0 )
-                        ERROR_MSG( "failed to get the last sample delta.\n" );
+                        ERROR_MSG( "最終サンプルデルタの取得に失敗しました。\n" );
                     out_track->last_delta *= out_track->timebase;
                     if( --num_active_input_tracks == 0 )
                         break;      /* Reached the end of whole tracks. */
@@ -1179,7 +1180,7 @@ static int do_mux( muxer_t *muxer )
                     uint64_t sample_dts  = sample->dts;         /* same as above */
                     uint64_t sample_cts  = sample->cts;         /* same as above */
                     if( lsmash_append_sample( output->root, out_track->track_ID, sample ) )
-                        return ERROR_MSG( "failed to append a sample.\n" );
+                        return ERROR_MSG( "ファイルのアペンドに失敗しました。\n" );
                     if( out_track->current_sample_number == 0 )
                         out_track->start_offset = sample_cts;
                     else
@@ -1197,7 +1198,7 @@ static int do_mux( muxer_t *muxer )
                     if( (total_media_size >> 22) > progress_pos )
                     {
                         progress_pos = total_media_size >> 22;
-                        eprintf( "Importing: %"PRIu64" bytes\r", total_media_size );
+                        eprintf( "インポート中: %"PRIu64" bytes\r", total_media_size );
                     }
                 }
                 else
@@ -1223,7 +1224,7 @@ static int do_mux( muxer_t *muxer )
         output_track_t *out_track = &out_movie->track[ out_movie->current_track_number - 1 ];
         uint32_t last_sample_delta = out_track->lpcm ? 1 : out_track->last_delta;
         if( lsmash_flush_pooled_samples( output->root, out_track->track_ID, last_sample_delta ) )
-            ERROR_MSG( "failed to flush the rest of samples.\n" );
+            ERROR_MSG( "残りのサンプルのフラッシュに失敗しました。\n" );
         /* Create edit list.
          * Don't trust media duration basically. It's just duration of media, not duration of track presentation. */
         uint64_t actual_duration = out_track->lpcm
@@ -1235,7 +1236,7 @@ static int do_mux( muxer_t *muxer )
         edit.start_time = out_track->priming_samples + out_track->start_offset;
         edit.rate       = ISOM_EDIT_MODE_NORMAL;
         if( lsmash_create_explicit_timeline_map( output->root, out_track->track_ID, edit ) )
-            ERROR_MSG( "failed to set timeline map.\n" );
+            ERROR_MSG( "タイムラインマップの設定に失敗しました。\n" );
     }
     return 0;
 #undef LSMASH_MAX
@@ -1248,7 +1249,7 @@ static int moov_to_front_callback( void *param, uint64_t written_movie_size, uin
     if ( (written_movie_size >> 24) <= progress_pos )
         return 0;
     REFRESH_CONSOLE;
-    eprintf( "Finalizing: [%5.2lf%%]\r", total_movie_size ? ((double)written_movie_size / total_movie_size) * 100.0 : 0 );
+    eprintf( "ファイナライズ中: [%5.2lf%%]\r", total_movie_size ? ((double)written_movie_size / total_movie_size) * 100.0 : 0 );
     /* Print, per 16 megabytes */
     progress_pos = written_movie_size >> 24;
     return 0;
@@ -1293,15 +1294,15 @@ int main( int argc, char *argv[] )
         return 0;
     }
     if( open_input_files( &muxer ) )
-        return MUXER_ERR( "failed to open input files.\n" );
+        return MUXER_ERR( "入力ファイルのオープンに失敗しました。\n" );
     if( prepare_output( &muxer ) )
-        return MUXER_ERR( "failed to set up preparation for output.\n" );
+        return MUXER_ERR( "出力の準備のセットアップに失敗しました。\n" );
     if( do_mux( &muxer ) )
-        return MUXER_ERR( "failed to do muxing.\n" );
+        return MUXER_ERR( "Muxに失敗しました。\n" );
     if( finish_movie( &muxer.output, &muxer.opt ) )
-        return MUXER_ERR( "failed to finish movie.\n" );
+        return MUXER_ERR( "映像のフィニッシュに失敗しました。\n" );
     REFRESH_CONSOLE;
-    eprintf( "Muxing completed!\n" );
+    eprintf( "Mux終了!\n" );
     cleanup_muxer( &muxer );        /* including lsmash_destroy_root() */
     return 0;
 }

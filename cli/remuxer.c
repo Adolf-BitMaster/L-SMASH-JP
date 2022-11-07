@@ -245,7 +245,7 @@ static int remuxer_error( remuxer_t *remuxer, const char *message, ... )
 {
     cleanup_remuxer( remuxer );
     REFRESH_CONSOLE;
-    eprintf( "[Error] " );
+    eprintf( "[エラー] " );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -256,7 +256,7 @@ static int remuxer_error( remuxer_t *remuxer, const char *message, ... )
 static int error_message( const char *message, ... )
 {
     REFRESH_CONSOLE;
-    eprintf( "[Error] " );
+    eprintf( "[エラー] " );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -267,7 +267,7 @@ static int error_message( const char *message, ... )
 static int warning_message( const char *message, ... )
 {
     REFRESH_CONSOLE;
-    eprintf( "[Warning] " );
+    eprintf( "[警告] " );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -283,8 +283,9 @@ static void display_version( void )
 {
     eprintf( "\n"
              "L-SMASH isom/mov re-muliplexer rev%s  %s\n"
-             "Built on %s %s\n"
+             "ビルド日時: %s %s\n"
              "Copyright (C) 2011-2017 L-SMASH project\n",
+             "日本語翻訳: BitMaster206\n"
              LSMASH_REV, LSMASH_GIT_HASH, __DATE__, __TIME__ );
 }
 
@@ -292,64 +293,64 @@ static void display_help( void )
 {
     display_version();
     eprintf( "\n"
-             "Usage: remuxer -i input1 [-i input2 -i input3 ...] -o output\n"
-             "Global options:\n"
+             "使用法: remuxer -i input1 [-i input2 -i input3 ...] -o output\n"
+             "オプション:\n"
              "  --help\n"
-             "      Display help.\n"
+             "      ヘルプを表示\n"
              "  --version\n"
-             "      Display version information.\n"
-             "  --chapter <string>\n"
-             "      Set chapters from the file.\n"
+             "      バージョン情報を表示\n"
+             "  --chapter <文字列>\n"
+             "      ファイルからチャプターを表示\n"
              "  --chpl-with-bom\n"
-             "      Add UTF-8 BOM to the chapter strings in the chapter list. (experimental)\n"
-             "  --chapter-track <integer>\n"
-             "      Set which track the chapter applies to.\n"
-             "      This option takes effect only when reference chapter is available.\n"
-             "      If this option is not used, it defaults to 1.\n"
-             "  --language <string>\n"
-             "      Specify the default language for all the output tracks.\n"
-             "      This option is overridden by the track options.\n"
-             "  --max-chunk-duration <integer>\n"
-             "      Specify the maximum duration per chunk in milliseconds.\n"
-             "      Chunk is the minimum unit for media interleaving.\n"
-             "      If this option is not used, it defaults to 500.\n"
-             "  --max-chunk-size <integer>\n"
-             "      Specify the maximum size per chunk in bytes.\n"
-             "      If this option is not used, it defaults to 4*1024*1024.\n"
-             "  --fragment <integer>\n"
-             "      Enable fragmentation per random accessible point.\n"
-             "      Set which track the fragmentation is based on.\n"
+             "      チャプターリストの文字列にUTF-8 BOMを追加 (実験的)\n"
+             "  --chapter-track <整数>\n"
+             "      適用するチャプターを設定\n"
+             "      このオプションは参照チャプターが有効な場合のみ作用します。\n"
+             "      このオプションが指定されなかった場合、自動的に1になります。\n"
+             "  --language <文字列>\n"
+             "      出力トラックのデフォルト言語を指定\n"
+             "      このオプションはトラックオプションにより上書きされます。\n"
+             "  --max-chunk-duration <整数>\n"
+             "      チャンクごとのズレをミリ秒単位で指定\n"
+             "      チャンクはインターリーブ時の最小単位です。\n"
+             "      このオプションが指定されなかった場合、自動的に500になります。\n"
+             "  --max-chunk-size <整数>\n"
+             "      チャンクの最大サイズをバイト単位で指定\n"
+             "      このオプションが指定されなかった場合、自動的に4*1024*1024になります。\n"
+             "  --fragment <整数>\n"
+             "      ランダムアクセス可能ポイントごとの断片化を有効化\n"
+             "      断片化のもととなるトラックを設定します。\n"
              "  --min-frag-duration <float>\n"
-             "      Specify the minimum duration which fragments are allowed to be.\n"
-             "      This option requires --fragment.\n"
-             "  --dash <integer>\n"
-             "      Enable DASH ISOBMFF-based Media segmentation.\n"
-             "      The value is the number of subsegments per segment.\n"
-             "      If zero, Indexed self-initializing Media Segment is constructed.\n"
-             "      This option requires --fragment.\n"
+             "      フラグメントを許容する最小時間を指定\n"
+             "      --fragment が使用されている必要があります。\n"
+             "  --dash <整数>\n"
+             "      DASH ISOBMFF-basedメディア分割を有効化\n"
+             "      セグメントごとのサブセグメント数を指定します。\n"
+             "      ゼロを指定した場合、インデックスされたセルフ初期化セグメントが構成されます。\n"
+             "      --fragment が使用されている必要があります。\n"
              "  --compact-size-table\n"
-             "      Compress sample size tables if possible.\n"
+             "      可能ならばサンプルサイズテーブルを圧縮\n"
              "  --dry-run\n"
-             "      Execute as a dry run.\n"
-             "Track options:\n"
+             "      ドライランとして実行\n"
+             "トラックオプション:\n"
              "  remove\n"
-             "      Remove this track.\n"
+             "      トラックを削除\n"
              "  disable\n"
-             "      Disable this track.\n"
-             "  language=<string>\n"
-             "      Specify media language.\n"
-             "  alternate-group=<integer>\n"
-             "      Specify alternate group.\n"
-             "  handler=<string>\n"
-             "      Set media handler name.\n"
-             "  seek=<integer>\n"
-             "      Specify starting point in media.\n"
-             "  safe-seek=<integer>\n"
-             "      Same as seek except for considering random accessible point\n"
-             "      Media starts from the closest random accessible point.\n"
-             "How to use track options:\n"
+             "      トラックを無効化\n"
+             "  language=<文字列>\n"
+             "      メディア言語を指定\n"
+             "  alternate-group=<整数>\n"
+             "      一方のグループを指定\n"
+             "  handler=<文字列>\n"
+             "      メディアハンドラ名を指定\n"
+             "  seek=<整数>\n"
+             "      メディアの開始地点を指定\n"
+             "  safe-seek=<整数>\n"
+             "      ランダムアクセス可能ポイントを無視してシーク\n"
+             "      メディアは最も近いランダムアクセスポイントから開始されます。\n"
+             "トラックオプションの使い方:\n"
              "  -i input?[track_number1]:[track_option1],[track_option2]?[track_number2]:...\n"
-             "For example:\n"
+             "例:\n"
              "  remuxer -i input1 -i input2?2:alternate-group=1?3:language=jpn,alternate-group=1 -o output\n" );
 }
 
@@ -425,19 +426,19 @@ static int input_data_reference
 {
     if( lsmash_open_file( data_ref->location, 1, &in_data_ref->param ) < 0 )
     {
-        WARNING_MSG( "failed to open an external media file.\n" );
+        WARNING_MSG( "追加メディアを開けませんでした。\n" );
         return -1;
     }
     in_data_ref->param.mode |= LSMASH_FILE_MODE_MEDIA;
     in_data_ref->fh = lsmash_set_file( input->root, &in_data_ref->param );
     if( !in_data_ref->fh )
     {
-        WARNING_MSG( "failed to set an external media file as a data reference.\n" );
+        WARNING_MSG( "参照メディアデータの設定に失敗しました。\n" );
         return -1;
     }
     if( lsmash_assign_data_reference( input->root, track_ID, data_ref->index, in_data_ref->fh ) < 0 )
     {
-        WARNING_MSG( "failed to assign an external media a data reference.\n" );
+        WARNING_MSG( "参照メディアデータのアサインに失敗しました。\n" );
         return -1;
     }
     return 0;
@@ -446,19 +447,19 @@ static int input_data_reference
 static int get_movie( input_t *input, char *input_name )
 {
     if( !strcmp( input_name, "-" ) )
-        return ERROR_MSG( "standard input not supported.\n" );
+        return ERROR_MSG( "標準入力はサポートされていません。\n" );
     /* Read an input file. */
     input->root = lsmash_create_root();
     if( !input->root )
-        return ERROR_MSG( "failed to create a ROOT for an input file.\n" );
+        return ERROR_MSG( "ROOTを入力ファイルに作成できませんでした。\n" );
     input_file_t *in_file = &input->file;
     if( lsmash_open_file( input_name, 1, &in_file->param ) < 0 )
-        return ERROR_MSG( "failed to open an input file.\n" );
+        return ERROR_MSG( "入力ファイルを開けませんでした。\n" );
     in_file->fh = lsmash_set_file( input->root, &in_file->param );
     if( !in_file->fh )
-        return ERROR_MSG( "failed to add an input file into a ROOT.\n" );
+        return ERROR_MSG( "ROOTに入力ファイルを追加できませんでした。\n" );
     if( lsmash_read_file( in_file->fh, &in_file->param ) < 0 )
-        return ERROR_MSG( "failed to read an input file\n" );
+        return ERROR_MSG( "入力ファイルを読み込めませんでした。\n" );
     /* Get iTunes metadata. */
     input_movie_t *in_movie = &in_file->movie;
     in_movie->num_itunes_metadata = lsmash_count_itunes_metadata( input->root );
@@ -466,13 +467,13 @@ static int get_movie( input_t *input, char *input_name )
     {
         in_movie->itunes_metadata = lsmash_malloc( in_movie->num_itunes_metadata * sizeof(lsmash_itunes_metadata_t) );
         if( !in_movie->itunes_metadata )
-            return ERROR_MSG( "failed to alloc iTunes metadata.\n" );
+            return ERROR_MSG( "iTunesメタデータの割付に失敗しました。\n" );
         uint32_t itunes_metadata_count = 0;
         for( uint32_t i = 1; i <= in_movie->num_itunes_metadata; i++ )
         {
             if( get_itunes_metadata( input->root, i, &in_movie->itunes_metadata[itunes_metadata_count] ) )
             {
-                WARNING_MSG( "failed to get an iTunes metadata.\n" );
+                WARNING_MSG( "iTunesメタデータの取得に失敗しました。\n" );
                 continue;
             }
             ++itunes_metadata_count;
@@ -482,42 +483,42 @@ static int get_movie( input_t *input, char *input_name )
     in_movie->current_track_number = 1;
     lsmash_initialize_movie_parameters( &in_movie->param );
     if( lsmash_get_movie_parameters( input->root, &in_movie->param ) )
-        return ERROR_MSG( "failed to get movie parameters.\n" );
+        return ERROR_MSG( "映像パラメータの取得に失敗しました。\n" );
     uint32_t num_tracks = in_movie->num_tracks = in_movie->param.number_of_tracks;
     /* Create tracks. */
     input_track_t *in_track = in_movie->track = lsmash_malloc_zero( num_tracks * sizeof(input_track_t) );
     if( !in_track )
-        return ERROR_MSG( "failed to alloc input tracks.\n" );
+        return ERROR_MSG( "入力トラックの割付に失敗しました。\n" );
     for( uint32_t i = 0; i < num_tracks; i++ )
     {
         in_track[i].track_ID = lsmash_get_track_ID( input->root, i + 1 );
         if( !in_track[i].track_ID )
-            return ERROR_MSG( "failed to get track_ID.\n" );
+            return ERROR_MSG( "track_IDの取得に失敗しました。\n" );
     }
     for( uint32_t i = 0; i < num_tracks; i++ )
     {
         lsmash_initialize_track_parameters( &in_track[i].track_param );
         if( lsmash_get_track_parameters( input->root, in_track[i].track_ID, &in_track[i].track_param ) )
         {
-            WARNING_MSG( "failed to get track parameters.\n" );
+            WARNING_MSG( "トラックパラメータの取得に失敗しました。\n" );
             continue;
         }
         lsmash_initialize_media_parameters( &in_track[i].media.param );
         if( lsmash_get_media_parameters( input->root, in_track[i].track_ID, &in_track[i].media.param ) )
         {
-            WARNING_MSG( "failed to get media parameters.\n" );
+            WARNING_MSG( "メディアパラメータの取得に失敗しました。\n" );
             continue;
         }
         uint32_t data_ref_count = lsmash_count_data_reference( input->root, in_track[i].track_ID );
         if( data_ref_count == 0 )
         {
-            WARNING_MSG( "failed to get the number of data references.\n" );
+            WARNING_MSG( "参照データの個数の獲得に失敗しました。\n" );
             continue;
         }
         in_track[i].media.data_refs = lsmash_malloc_zero( data_ref_count * sizeof(input_data_ref_t) );
         if( !in_track[i].media.data_refs )
         {
-            WARNING_MSG( "failed to allocate handles of data reference.\n" );
+            WARNING_MSG( "参照データの個数の割付に失敗しました。\n" );
             continue;
         }
         for( uint32_t j = 0; j < data_ref_count; j++ )
@@ -526,7 +527,7 @@ static int get_movie( input_t *input, char *input_name )
             lsmash_data_reference_t data_ref = { .index = j + 1 };
             if( lsmash_get_data_reference( input->root, in_track[i].track_ID, &data_ref ) < 0 )
             {
-                WARNING_MSG( "failed to get a data references.\n" );
+                WARNING_MSG( "参照データを取得できませんでした。\n" );
                 continue;
             }
             if( data_ref.location )
@@ -564,35 +565,35 @@ static int get_movie( input_t *input, char *input_name )
         }
         if( lsmash_construct_timeline( input->root, in_track[i].track_ID ) )
         {
-            WARNING_MSG( "failed to construct timeline.\n" );
+            WARNING_MSG( "タイムラインの構築に失敗しました。\n" );
             continue;
         }
         if( lsmash_get_last_sample_delta_from_media_timeline( input->root, in_track[i].track_ID, &in_track[i].last_sample_delta ) )
         {
-            WARNING_MSG( "failed to get the last sample delta.\n" );
+            WARNING_MSG( "最終サンプルデルタの取得に失敗しました。\n" );
             continue;
         }
         in_track[i].num_summaries = lsmash_count_summary( input->root, in_track[i].track_ID );
         if( in_track[i].num_summaries == 0 )
         {
-            WARNING_MSG( "failed to find valid summaries.\n" );
+            WARNING_MSG( "有効なサマリーを取得できませんでした。\n" );
             continue;
         }
         in_track[i].summaries = lsmash_malloc_zero( in_track[i].num_summaries * sizeof(input_summary_t) );
         if( !in_track[i].summaries )
-            return ERROR_MSG( "failed to alloc input summaries.\n" );
+            return ERROR_MSG( "入力サマリーの割付に失敗しました。\n" );
         for( uint32_t j = 0; j < in_track[i].num_summaries; j++ )
         {
             lsmash_summary_t *summary = lsmash_get_summary( input->root, in_track[i].track_ID, j + 1 );
             if( !summary )
             {
-                WARNING_MSG( "failed to get a summary.\n" );
+                WARNING_MSG( "サマリーの取得に失敗しました。\n" );
                 continue;
             }
             if( !LSMASH_FLAGS_SATISFIED( lsmash_check_codec_support( summary->sample_type ), LSMASH_CODEC_SUPPORT_FLAG_REMUX ) )
             {
                 lsmash_cleanup_summary( summary );
-                WARNING_MSG( "no support to remux this stream.\n" );
+                WARNING_MSG( "このストリームはremuxに対応していません。\n" );
                 continue;
             }
             in_track[i].summaries[j].summary = summary;
@@ -620,19 +621,19 @@ static int parse_track_option( remuxer_t *remuxer )
                 break;
             if( !strchr( current_track_opt->raw_track_option, ':' )
              || strchr( current_track_opt->raw_track_option, ':' ) == current_track_opt->raw_track_option )
-                return ERROR_MSG( "track number is not specified in %s\n", current_track_opt->raw_track_option );
+                return ERROR_MSG( "%s でトラック番号が指定されていません。\n", current_track_opt->raw_track_option );
             if( strchr( current_track_opt->raw_track_option, ':' ) != strrchr( current_track_opt->raw_track_option, ':' ) )
-                return ERROR_MSG( "multiple colons inside one track option in %s.\n", current_track_opt->raw_track_option );
+                return ERROR_MSG( "%s にてトラックオプションにコロンが複数個含まれています。\n", current_track_opt->raw_track_option );
             uint32_t track_number = atoi( strtok( current_track_opt->raw_track_option, ":" ) );
             if( track_number == 0 )
-                return ERROR_MSG( "%s is an invalid track number.\n", strtok( current_track_opt->raw_track_option, ":" ) );
+                return ERROR_MSG( "%s は不正なトラックナンバーです。\n", strtok( current_track_opt->raw_track_option, ":" ) );
             if( track_number > remuxer->input[i].file.movie.num_tracks )
-                return ERROR_MSG( "%d is an invalid track number.\n", track_number );
+                return ERROR_MSG( "%d は不正なトラックナンバーです。\n", track_number );
             char *track_option;
             while( (track_option = strtok( NULL, "," )) != NULL )
             {
                 if( strchr( track_option, '=' ) != strrchr( track_option, '=' ) )
-                    return ERROR_MSG( "multiple equal signs inside one track option in %s\n", track_option );
+                    return ERROR_MSG( "%s のトラックオプションに複数のイコール記号が含まれています。\n", track_option );
                 current_track_opt = &track[i][track_number - 1];
                 if( strstr( track_option, "remove" ) )
                 {
@@ -669,7 +670,7 @@ static int parse_track_option( remuxer_t *remuxer )
                     current_track_opt->seek = atoi( track_parameter );
                 }
                 else
-                    return ERROR_MSG( "unknown track option %s\n", track_option );
+                    return ERROR_MSG( "%s は不明なオプションです。\n", track_option );
             }
         }
     return 0;
@@ -688,7 +689,7 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
     track_media_option **track_option      = remuxer->track_option;
     file_option         *input_file_option = lsmash_malloc( remuxer->num_input * sizeof(file_option) );
     if( !input_file_option )
-        return ERROR_MSG( "failed to allocate per-file option.\n" );
+        return ERROR_MSG( "ファイルごとの設定の割当に失敗しました。\n" );
     int input_movie_number = 0;
     for( int i = 1; i < argc ; i++ )
     {
@@ -696,17 +697,17 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
         if( !strcasecmp( argv[i], "-i" ) || !strcasecmp( argv[i], "--input" ) )    /* input file */
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "-i requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "-i には引数が必須です。\n" );
             input_file_option[input_movie_number].num_track_delimiter = 0;
             char *p = argv[i];
             while( *p )
                 input_file_option[input_movie_number].num_track_delimiter += (*p++ == '?');
             if( get_movie( &input[input_movie_number], strtok( argv[i], "?" ) ) )
-                FAILED_PARSE_CLI_OPTION( "failed to get input movie.\n" );
+                FAILED_PARSE_CLI_OPTION( "入力映像の取得に失敗しました。\n" );
             uint32_t num_tracks = input[input_movie_number].file.movie.num_tracks;
             track_option[input_movie_number] = lsmash_malloc_zero( num_tracks * sizeof(track_media_option) );
             if( !track_option[input_movie_number] )
-                FAILED_PARSE_CLI_OPTION( "couldn't allocate memory.\n" );
+                FAILED_PARSE_CLI_OPTION( "メモリ割り当てに失敗しました。\n" );
             input_file_option[input_movie_number].whole_track_option = strtok( NULL, "" );
             input[input_movie_number].file.movie.movie_ID = input_movie_number + 1;
             ++input_movie_number;
@@ -715,17 +716,17 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
         else if( !strcasecmp( argv[i], "-o" ) || !strcasecmp( argv[i], "--output" ) )    /* output file */
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "-o requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "-o には引数が必須です。\n" );
             output_t *output = remuxer->output;
             output->root = lsmash_create_root();
             if( !output->root )
-                FAILED_PARSE_CLI_OPTION( "failed to create a ROOT.\n" );
+                FAILED_PARSE_CLI_OPTION( "ROOTの作成に失敗しました。\n" );
             output->file.name = argv[i];
         }
         else if( !strcasecmp( argv[i], "--chapter" ) )    /* chapter file */
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--chapter requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--chapter には引数が必須です。\n" );
             remuxer->chap_file = argv[i];
         }
         else if( !strcasecmp( argv[i], "--chpl-with-bom" ) )
@@ -733,55 +734,55 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
         else if( !strcasecmp( argv[i], "--chapter-track" ) )    /* track to apply reference chapter to */
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--chapter-track requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--chapter-track には引数が必須です。\n" );
             remuxer->chap_track = atoi( argv[i] );
             if( !remuxer->chap_track )
-                FAILED_PARSE_CLI_OPTION( "%s is an invalid track number.\n", argv[i] );
+                FAILED_PARSE_CLI_OPTION( "%s は不正なトラック番号です。\n", argv[i] );
         }
         else if( !strcasecmp( argv[i], "--language" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--chapter requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--chapter には引数が必須です。\n" );
             remuxer->default_language = lsmash_pack_iso_language( argv[i] );
         }
         else if( !strcasecmp( argv[i], "--max-chunk-duration" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--max-chunk-duration requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--max-chunk-duration には引数が必須です。\n" );
             remuxer->max_chunk_duration_in_ms = atoi( argv[i] );
             if( remuxer->max_chunk_duration_in_ms == 0 )
-                FAILED_PARSE_CLI_OPTION( "%s is an invalid value for --max-chunk-duration.\n", argv[i] );
+                FAILED_PARSE_CLI_OPTION( "%s は --max-chunk-duration に対し不正です。\n", argv[i] );
         }
         else if( !strcasecmp( argv[i], "--max-chunk-size" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--max-chunk-size requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--max-chunk-size には引数が必須です。\n" );
             remuxer->max_chunk_size = atoi( argv[i] );
             if( remuxer->max_chunk_size == 0 )
-                FAILED_PARSE_CLI_OPTION( "%s is an invalid value for --max-chunk-size.\n", argv[i] );
+                FAILED_PARSE_CLI_OPTION( "%s は --max-chunk-size に対し不正です。\n", argv[i] );
         }
         else if( !strcasecmp( argv[i], "--fragment" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--fragment requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--fragment には引数が必須です。\n" );
             remuxer->frag_base_track = atoi( argv[i] );
             if( remuxer->frag_base_track == 0 )
-                FAILED_PARSE_CLI_OPTION( "%s is an invalid track number.\n", argv[i] );
+                FAILED_PARSE_CLI_OPTION( "%s は不正なトラック番号です。\n", argv[i] );
         }
         else if( !strcasecmp( argv[i], "--min-frag-duration" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--min-frag-duration requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--min-frag-duration には引数が必須です。\n" );
             remuxer->min_frag_duration = atof( argv[i] );
             if( remuxer->min_frag_duration == 0.0 || remuxer->min_frag_duration == -0.0 )
-                FAILED_PARSE_CLI_OPTION( "%s is an invalid fragment duration.\n", argv[i] );
+                FAILED_PARSE_CLI_OPTION( "%s は不正な分散ズレです。\n", argv[i] );
             else if( remuxer->frag_base_track == 0 )
-                FAILED_PARSE_CLI_OPTION( "--min-frag-duration requires --fragment also be set.\n" );
+                FAILED_PARSE_CLI_OPTION( "--min-frag-duration の使用には --fragment が設定されている必要があります。\n" );
         }
         else if( !strcasecmp( argv[i], "--dash" ) )
         {
             if( ++i == argc )
-                FAILED_PARSE_CLI_OPTION( "--dash requires an argument.\n" );
+                FAILED_PARSE_CLI_OPTION( "--dash には引数が必須です。\n" );
             remuxer->subseg_per_seg = atoi( argv[i] );
             remuxer->dash           = 1;
         }
@@ -790,10 +791,10 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
         else if( !strcasecmp( argv[i], "--dry-run" ) )
             remuxer->dry_run = 1;
         else
-            FAILED_PARSE_CLI_OPTION( "unkown option found: %s\n", argv[i] );
+            FAILED_PARSE_CLI_OPTION( "該当するオプションはありません: %s\n", argv[i] );
     }
     if( !remuxer->output->root )
-        FAILED_PARSE_CLI_OPTION( "output file name is not specified.\n" );
+        FAILED_PARSE_CLI_OPTION( "出力ファイル名が指定されていません。\n" );
     /* Parse track options */
     /* Get the current track and media parameters */
     for( int i = 0; i < remuxer->num_input; i++ )
@@ -815,7 +816,7 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
     for( int i = 0; i < remuxer->num_input; i++ )
     {
         if( input_file_option[i].num_track_delimiter > input[i].file.movie.num_tracks )
-            FAILED_PARSE_CLI_OPTION( "more track options specified than the actual number of the tracks (%"PRIu32").\n",
+            FAILED_PARSE_CLI_OPTION( "指定トラック数が本来のものを超過しています。 (%"PRIu32")\n",
                                      input[i].file.movie.num_tracks );
         if( input_file_option[i].num_track_delimiter )
         {
@@ -825,7 +826,7 @@ static int parse_cli_option( int argc, char **argv, remuxer_t *remuxer )
         }
     }
     if( parse_track_option( remuxer ) )
-        FAILED_PARSE_CLI_OPTION( "failed to parse track options.\n" );
+        FAILED_PARSE_CLI_OPTION( "トラックオプションの読み込みに失敗しました。\n" );
     lsmash_free( input_file_option );
     return 0;
 #undef FAILED_PARSE_CLI_OPTION
@@ -945,7 +946,7 @@ static int pick_most_used_major_brand( input_t *input, output_file_t *out_file, 
 {
     void *heap = lsmash_malloc( num_input * (sizeof(lsmash_brand_type) + 2 * sizeof(uint32_t)) );
     if( !heap )
-        return ERROR_MSG( "failed to allocate memory.\n" );
+        return ERROR_MSG( "メモリ割り当てに失敗しました。\n" );
     lsmash_brand_type *major_brand       = (lsmash_brand_type *)heap;
     uint32_t          *minor_version     = (uint32_t *)((lsmash_brand_type *)heap + num_input);
     uint32_t          *major_brand_count = minor_version + num_input;
@@ -1003,7 +1004,7 @@ static int set_movie_parameters( remuxer_t *remuxer )
             out_file->param.mode |= LSMASH_FILE_MODE_SEGMENT;
         }
         else
-            WARNING_MSG( "--dash requires --fragment.\n" );
+            WARNING_MSG( "--dash の使用には --fragment が必要です。\n" );
     }
     out_file->param.max_chunk_duration = remuxer->max_chunk_duration_in_ms * 1e-3;
     out_file->param.max_chunk_size     = remuxer->max_chunk_size;
@@ -1014,14 +1015,14 @@ static int set_movie_parameters( remuxer_t *remuxer )
         out_file->param.minor_version = 0;
     }
     else if( pick_most_used_major_brand( input, out_file, num_input ) < 0 )
-        return ERROR_MSG( "failed to pick the most used major brand.\n" );
+        return ERROR_MSG( "最も利用されたブランドの抽出に失敗しました。\n" );
     /* Deduplicate compatible brands. */
     uint32_t num_input_brands = num_input + (self_containd_segment ? 1 : 0);
     for( int i = 0; i < num_input; i++ )
         num_input_brands += input[i].file.param.brand_count;
     lsmash_brand_type *input_brands = lsmash_malloc( num_input_brands * sizeof(lsmash_brand_type) );
     if( !input_brands )
-        return ERROR_MSG( "failed to allocate brands for an input file.\n" );
+        return ERROR_MSG( "入力ファイルにブランドを割り付けできませんでした。\n" );
     num_input_brands = 0;
     if( self_containd_segment )
         input_brands[num_input_brands++] = ISOM_BRAND_TYPE_DASH;
@@ -1036,7 +1037,7 @@ static int set_movie_parameters( remuxer_t *remuxer )
     if( !output_brands )
     {
         lsmash_free( input_brands );
-        return ERROR_MSG( "failed to allocate brands for an output file.\n" );
+        return ERROR_MSG( "出力ファイルにブランドを割り付けできませんでした。\n" );
     }
     uint32_t num_output_brands = 0;
     for( uint32_t i = 0; i < num_input_brands; i++ )
@@ -1057,7 +1058,7 @@ static int set_movie_parameters( remuxer_t *remuxer )
     /* Set up a file. */
     out_file->fh = lsmash_set_file( output->root, &out_file->param );
     if( !out_file->fh )
-        return ERROR_MSG( "failed to add an output file into a ROOT.\n" );
+        return ERROR_MSG( "ROOTに出力ファイルを追加できませんでした。\n" );
     out_file->seg_param = out_file->param;
     /* Check whether a reference chapter track is allowed or not. */
     if( remuxer->chap_file )
@@ -1104,7 +1105,7 @@ static void set_itunes_metadata( output_t *output, input_t *input, int num_input
         for( uint32_t j = 0; j < input[i].file.movie.num_itunes_metadata; j++ )
             if( lsmash_set_itunes_metadata( output->root, input[i].file.movie.itunes_metadata[j] ) )
             {
-                WARNING_MSG( "failed to set an iTunes metadata.\n" );
+                WARNING_MSG( "iTunesメタデータの設定に失敗しました。\n" );
                 continue;
             }
 }
@@ -1117,10 +1118,10 @@ static int set_starting_point( input_t *input, input_track_t *in_track, uint32_t
     if( lsmash_get_closest_random_accessible_point_from_media_timeline( input->root, in_track->track_ID, 1, &rap_number ) )
     {
         if( consider_rap )
-            return ERROR_MSG( "failed to get the first random accessible point.\n" );
+            return ERROR_MSG( "最初のランダムアクセス可能地点の取得に失敗しました。\n" );
         else
         {
-            WARNING_MSG( "no random access point!\n" );
+            WARNING_MSG( "ランダムアクセス可能ポイントがありません!\n" );
             /* Set number of the first sample to be muxed. */
             in_track->current_sample_number = seek_point;
             return 0;
@@ -1131,26 +1132,26 @@ static int set_starting_point( input_t *input, input_track_t *in_track, uint32_t
     uint64_t rap_cts;
     uint32_t ctd_shift;
     if( lsmash_get_dts_from_media_timeline( input->root, in_track->track_ID, rap_number, &rap_dts ) )
-        return ERROR_MSG( "failed to get CTS of the first random accessible sample of seek point.\n" );
+        return ERROR_MSG( "CTS ランダムアクセス可能サンプルのシークポイントの取得に失敗しました。\n" );
     if( lsmash_get_cts_from_media_timeline( input->root, in_track->track_ID, rap_number, &rap_cts ) )
-        return ERROR_MSG( "failed to get CTS of the first random accessible sample of seek point.\n" );
+        return ERROR_MSG( "CTS ランダムアクセス可能サンプルのシークポイントの取得に失敗しました。\n" );
     if( lsmash_get_composition_to_decode_shift_from_media_timeline( input->root, in_track->track_ID, &ctd_shift ) )
-        return ERROR_MSG( "failed to get composition to decode timeline shfit.\n" );
+        return ERROR_MSG( "タイムラインシフトのデコード構成の取得に失敗しました。\n" );
     in_track->composition_delay = rap_cts - rap_dts + ctd_shift;
     /* Check if starting point is random accessible. */
     if( lsmash_get_closest_random_accessible_point_from_media_timeline( input->root, in_track->track_ID, seek_point, &rap_number ) )
-        return ERROR_MSG( "failed to get a random accessible point.\n" );
+        return ERROR_MSG( "ランダムアクセス可能ポイントの取得に失敗しました。\n" );
     if( rap_number != seek_point )
     {
-        WARNING_MSG( "starting point you specified is not a random accessible point.\n" );
+        WARNING_MSG( "指定された地点はランダムアクセス可能ポイントではありません。\n" );
         if( consider_rap )
         {
             /* Get duration that should be skipped. */
             if( lsmash_get_cts_from_media_timeline( input->root, in_track->track_ID, rap_number, &rap_cts ) )
-                return ERROR_MSG( "failed to get CTS of the closest and past random accessible sample of starting point.\n" );
+                return ERROR_MSG( "始点に最も近い過去のランダムアクセス可能サンプルのCTSの取得に失敗しました。\n" );
             uint64_t seek_cts;
             if( lsmash_get_cts_from_media_timeline( input->root, in_track->track_ID, seek_point, &seek_cts ) )
-                return ERROR_MSG( "failed to get CTS of starting point.\n" );
+                return ERROR_MSG( "始点のCTSの取得に失敗しました。\n" );
             if( rap_cts < seek_cts )
                 in_track->skip_duration = seek_cts - rap_cts;
         }
@@ -1165,7 +1166,7 @@ static void exclude_invalid_output_track( output_t *output, output_track_t *out_
                                           const char *message, ... )
 {
     REFRESH_CONSOLE;
-    eprintf( "[Warning] in %"PRIu32"/%"PRIu32" -> out %"PRIu32": ", in_movie->movie_ID, in_track->track_ID, out_track->track_ID );
+    eprintf( "[警告] : %"PRIu32"/%"PRIu32" -> out %"PRIu32": ", in_movie->movie_ID, in_track->track_ID, out_track->track_ID );
     va_list args;
     va_start( args, message );
     vfprintf( stderr, message, args );
@@ -1192,7 +1193,7 @@ static int prepare_output( remuxer_t *remuxer )
         output->file.close = lsmash_close_file;
     }
     if( output->file.open( output->file.name, 0, &output->file.param ) < 0 )
-        return ERROR_MSG( "failed to open an output file.\n" );
+        return ERROR_MSG( "出力ファイルを開けませんでした。\n" );
     /* Count the number of output tracks. */
     for( int i = 0; i < remuxer->num_input; i++ )
         out_movie->num_tracks += input[i].file.movie.num_tracks;
@@ -1209,12 +1210,12 @@ static int prepare_output( remuxer_t *remuxer )
         }
     }
     if( set_movie_parameters( remuxer ) < 0 )
-        return ERROR_MSG( "failed to set output movie parameters.\n" );
+        return ERROR_MSG( "出力映像のパラメータを設定できませんでした。\n" );
     set_itunes_metadata( output, input, remuxer->num_input );
     /* Allocate output tracks. */
     out_movie->track = lsmash_malloc( out_movie->num_tracks * sizeof(output_track_t) );
     if( !out_movie->track )
-        return ERROR_MSG( "failed to alloc output tracks.\n" );
+        return ERROR_MSG( "出力トラックを割り付けできませんでした。\n" );
     out_movie->current_track_number = 1;
     for( int i = 0; i < remuxer->num_input; i++ )
     {
@@ -1228,10 +1229,10 @@ static int prepare_output( remuxer_t *remuxer )
             output_track_t *out_track = &out_movie->track[ out_movie->current_track_number - 1 ];
             out_track->summary_remap = lsmash_malloc_zero( in_track->num_summaries * sizeof(uint32_t) );
             if( !out_track->summary_remap )
-                return ERROR_MSG( "failed to create summary mapping for a track.\n" );
+                return ERROR_MSG( "トラックのサマリーマッピングの作成に失敗しました。\n" );
             out_track->track_ID = lsmash_create_track( output->root, in_track->media.param.handler_type );
             if( !out_track->track_ID )
-                return ERROR_MSG( "failed to create a track.\n" );
+                return ERROR_MSG( "トラックの作成に失敗しました。\n" );
             /* Copy track and media parameters except for track_ID. */
             out_track->track_param = in_track->track_param;
             out_track->media_param = in_track->media.param;
@@ -1245,17 +1246,17 @@ static int prepare_output( remuxer_t *remuxer )
                 out_track->track_param.mode &= ~ISOM_TRACK_ENABLED;
             if( lsmash_set_track_parameters( output->root, out_track->track_ID, &out_track->track_param ) < 0 )
             {
-                exclude_invalid_output_track( output, out_track, in_movie, in_track, "failed to set track parameters.\n" );
+                exclude_invalid_output_track( output, out_track, in_movie, in_track, "トラックパラメータの設定に失敗しました。\n" );
                 continue;
             }
             if( lsmash_set_media_parameters( output->root, out_track->track_ID, &out_track->media_param ) < 0 )
             {
-                exclude_invalid_output_track( output, out_track, in_movie, in_track, "failed to set media parameters.\n" );
+                exclude_invalid_output_track( output, out_track, in_movie, in_track, "メディアパラメータの設定に失敗しました。\n" );
                 continue;
             }
             lsmash_data_reference_t data_ref = { .index = 1, .location = NULL };
             if( lsmash_create_data_reference( output->root, out_track->track_ID, &data_ref, output->file.fh ) < 0 )
-                return ERROR_MSG( "failed to create a data reference for output movie.\n" );
+                return ERROR_MSG( "出力映像用の参照データの作成に失敗しました。\n" );
             uint32_t valid_summary_count = 0;
             for( uint32_t k = 0; k < in_track->num_summaries; k++ )
             {
@@ -1268,7 +1269,7 @@ static int prepare_output( remuxer_t *remuxer )
                 summary->data_ref_index = 1;
                 if( lsmash_add_sample_entry( output->root, out_track->track_ID, summary ) == 0 )
                 {
-                    WARNING_MSG( "failed to append a summary.\n" );
+                    WARNING_MSG( "サマリーの継ぎ足しに失敗しました。\n" );
                     lsmash_cleanup_summary( summary );
                     in_track->summaries[k].summary = NULL;
                     in_track->summaries[k].active  = 0;
@@ -1279,13 +1280,13 @@ static int prepare_output( remuxer_t *remuxer )
             }
             if( valid_summary_count == 0 )
             {
-                exclude_invalid_output_track( output, out_track, in_movie, in_track, "failed to append all summaries.\n" );
+                exclude_invalid_output_track( output, out_track, in_movie, in_track, "すべてのサマリーの継ぎ足しに失敗しました。\n" );
                 continue;
             }
             out_track->last_sample_delta = in_track->last_sample_delta;
             if( set_starting_point( input, in_track, current_track_opt->seek, current_track_opt->consider_rap ) < 0 )
             {
-                exclude_invalid_output_track( output, out_track, in_movie, in_track, "failed to set starting point.\n" );
+                exclude_invalid_output_track( output, out_track, in_movie, in_track, "始点の設定に失敗しました。\n" );
                 continue;
             }
             out_track->current_sample_number = 1;
@@ -1295,7 +1296,7 @@ static int prepare_output( remuxer_t *remuxer )
         }
     }
     if( out_movie->num_tracks == 0 )
-        return ERROR_MSG( "failed to create the output movie.\n" );
+        return ERROR_MSG( "出力映像の生成に失敗しました。\n" );
     out_movie->current_track_number = 1;
     output->current_seg_number = 1;
     return 0;
@@ -1327,14 +1328,14 @@ static int flush_movie_fragment( remuxer_t *remuxer )
             {
                 lsmash_sample_t sample;
                 if( lsmash_get_sample_info_from_media_timeline( in->root, in_track->track_ID, in_track->current_sample_number, &sample ) < 0 )
-                    return ERROR_MSG( "failed to get the information of the next sample.\n" );
+                    return ERROR_MSG( "次のサンプルのインフォメーションの取得に失敗しました。\n" );
                 uint64_t sample_dts = sample.dts - out_track->skip_dt_interval;
                 if( lsmash_flush_pooled_samples( output->root, out_track->track_ID, sample_dts - out_track->last_sample_dts ) < 0 )
-                    return ERROR_MSG( "failed to flush the rest of samples in a fragment.\n" );
+                    return ERROR_MSG( "分散時の残留サンプルの除去に失敗しました。\n" );
             }
             else
                 if( lsmash_flush_pooled_samples( output->root, out_track->track_ID, out_track->last_sample_delta ) < 0 )
-                    return ERROR_MSG( "failed to flush the rest of samples in a fragment.\n" );
+                    return ERROR_MSG( "分散時の残留サンプルの除去に失敗しました。\n" );
             if( ++out_current_track_number > out_movie->num_tracks )
                 break;
         }
@@ -1348,7 +1349,7 @@ static int moov_to_front_callback( void *param, uint64_t written_movie_size, uin
     if ( (written_movie_size >> 24) <= progress_pos )
         return 0;
     REFRESH_CONSOLE;
-    eprintf( "Finalizing: [%5.2lf%%]\r", ((double)written_movie_size / total_movie_size) * 100.0 );
+    eprintf( "ファイナライズ中: [%5.2lf%%]\r", ((double)written_movie_size / total_movie_size) * 100.0 );
     /* Print, per 16 megabytes */
     progress_pos = written_movie_size >> 24;
     return 0;
@@ -1389,7 +1390,7 @@ static int open_media_segment( output_t *output, lsmash_file_parameters_t *seg_p
     int suffixless_length = p - out_file->name;
     char *seg_name = lsmash_malloc( (seg_name_length + 1) * sizeof(char) );
     if( !seg_name )
-        return ERROR_MSG( "failed to allocate to store a segment filename.\n" );
+        return ERROR_MSG( "セグメントファイル名の一次保存用スペースの割付に失敗しました。\n" );
     seg_name[ seg_name_length ] = '\0';
     memcpy( seg_name, out_file->name, suffixless_length );
     sprintf( seg_name + suffixless_length, "_%"PRIu32, output->current_seg_number );
@@ -1397,7 +1398,7 @@ static int open_media_segment( output_t *output, lsmash_file_parameters_t *seg_p
         memcpy( seg_name + suffixless_length + suffix_length, p, end - p );
     int ret = out_file->open( seg_name, 0, seg_param );
     if( ret == 0 )
-        eprintf( "[Segment] out: %s\n", seg_name );
+        eprintf( "[セグメント] 出力: %s\n", seg_name );
     lsmash_free( seg_name );
     return ret;
 }
@@ -1408,7 +1409,7 @@ static int switch_segment( remuxer_t *remuxer )
     output_file_t *out_file = &output->file;
     lsmash_file_parameters_t seg_param = { 0 };
     if( open_media_segment( output, &seg_param ) < 0 )
-        return ERROR_MSG( "failed to open an output file for segmentation.\n" );
+        return ERROR_MSG( "セグメンテーション中に出力ファイルのオープンに失敗しました。\n" );
     /* Set up the media segment file.
      * Copy the parameters of the previous segment if the previous is not the initialization segment. */
     if( out_file->seg_param.mode & LSMASH_FILE_MODE_INITIALIZATION )
@@ -1416,7 +1417,7 @@ static int switch_segment( remuxer_t *remuxer )
         uint32_t           brand_count = out_file->param.brand_count + 2;
         lsmash_brand_type *brands      = lsmash_malloc_zero( brand_count * sizeof(lsmash_brand_type) );
         if( !brands )
-            return ERROR_MSG( "failed to allocate brands for an output segment file.\n" );
+            return ERROR_MSG( "セグメント出力ファイルにブランドを割り付けできませんでした。\n" );
         brands[0] = ISOM_BRAND_TYPE_MSDH;
         brands[1] = ISOM_BRAND_TYPE_MSIX;
         for( uint32_t i = 0; i < out_file->param.brand_count; i++ )
@@ -1436,11 +1437,11 @@ static int switch_segment( remuxer_t *remuxer )
     }
     lsmash_file_t *segment = lsmash_set_file( output->root, &seg_param );
     if( !segment )
-        return ERROR_MSG( "failed to add an output segment file into a ROOT.\n" );
+        return ERROR_MSG( "ROOTにセグメント出力ファイルを追加できませんでした。\n" );
     /* Switch to the next segment.
      * After switching, close the previous segment if the previous is not the initialization segment. */
     if( lsmash_switch_media_segment( output->root, segment, &moov_to_front ) < 0 )
-        return ERROR_MSG( "failed to switch to the next segment.\n" );
+        return ERROR_MSG( "次のセグメントに移れませんでした。\n" );
     if( !(out_file->seg_param.mode & LSMASH_FILE_MODE_INITIALIZATION) )
         return out_file->close( &out_file->seg_param );
     out_file->seg_param = seg_param;
@@ -1457,7 +1458,7 @@ static int handle_segmentation( remuxer_t *remuxer )
     {
         if( switch_segment( remuxer ) < 0 )
         {
-            ERROR_MSG( "failed to switch to a segment.\n" );
+            ERROR_MSG( "セグメントに移れませんでした。\n" );
             return -1;
         }
         output->file.current_subseg_number = 1;
@@ -1543,7 +1544,7 @@ static int do_remux( remuxer_t *remuxer )
                 {
                     if( lsmash_check_sample_existence_in_media_timeline( in->root, in_track->track_ID, in_track->current_sample_number ) )
                     {
-                        ERROR_MSG( "failed to get a sample.\n" );
+                        ERROR_MSG( "サンプルの入手に失敗しました。\n" );
                         break;
                     }
                     lsmash_sample_t sample_info = { 0 };
@@ -1557,7 +1558,7 @@ static int do_remux( remuxer_t *remuxer )
                     }
                     else
                     {
-                        ERROR_MSG( "failed to get a sample.\n" );
+                        ERROR_MSG( "サンプルの入手に失敗しました。\n" );
                         break;
                     }
                 }
@@ -1588,14 +1589,14 @@ static int do_remux( remuxer_t *remuxer )
                     {
                         if( flush_movie_fragment( remuxer ) < 0 )
                         {
-                            ERROR_MSG( "failed to flush a movie fragment.\n" );
+                            ERROR_MSG( "映像フラグメントのフラッシュに失敗しました。\n" );
                             break;
                         }
                         if( handle_segmentation( remuxer ) < 0 )
                             break;
                         if( lsmash_create_fragment_movie( output->root ) < 0 )
                         {
-                            ERROR_MSG( "failed to create a movie fragment.\n" );
+                            ERROR_MSG( "映像フラグメントの作成に失敗しました。\n" );
                             break;
                         }
                         pending_flush_fragments = 0;
@@ -1636,7 +1637,7 @@ static int do_remux( remuxer_t *remuxer )
                         if( lsmash_append_sample( output->root, out_track->track_ID, sample ) < 0 )
                         {
                             lsmash_delete_sample( sample );
-                            return ERROR_MSG( "failed to append a sample.\n" );
+                            return ERROR_MSG( "サンプルをアペンドできませんでした。\n" );
                         }
                         largest_dts                       = LSMASH_MAX( largest_dts, in_track->dts );
                         in_track->sample                  = NULL;
@@ -1650,7 +1651,7 @@ static int do_remux( remuxer_t *remuxer )
                         if( (total_media_size >> 22) > progress_pos )
                         {
                             progress_pos = total_media_size >> 22;
-                            eprintf( "Importing: %"PRIu64" bytes\r", total_media_size );
+                            eprintf( "インポート中: %"PRIu64" bytes\r", total_media_size );
                         }
                     }
                     else
@@ -1678,7 +1679,7 @@ static int do_remux( remuxer_t *remuxer )
     }
     for( uint32_t i = 0; i < out_movie->num_tracks; i++ )
         if( lsmash_flush_pooled_samples( output->root, out_movie->track[i].track_ID, out_movie->track[i].last_sample_delta ) )
-            return ERROR_MSG( "failed to flush samples.\n" );
+            return ERROR_MSG( "サンプルのフラッシュに失敗しました。\n" );
     return 0;
 #undef LSMASH_MAX
 }
@@ -1701,11 +1702,11 @@ static int construct_timeline_maps( remuxer_t *remuxer )
             {
                 /* Reconstruct timeline maps. */
                 if( lsmash_delete_explicit_timeline_map( output->root, out_track->track_ID ) )
-                    return ERROR_MSG( "failed to delete explicit timeline maps.\n" );
+                    return ERROR_MSG( "明示的タイムラインマップの削除に失敗しました。\n" );
                 uint32_t movie_timescale = lsmash_get_movie_timescale( output->root );
                 uint32_t media_timescale = lsmash_get_media_timescale( output->root, out_track->track_ID );
                 if( !media_timescale )
-                    return ERROR_MSG( "media timescale is broken.\n" );
+                    return ERROR_MSG( "タイムスケールが破損しています。\n" );
                 double timescale_convert_multiplier = (double)movie_timescale / media_timescale;
                 lsmash_edit_t edit;
                 edit.start_time = in_track->composition_delay + in_track->skip_duration;
@@ -1717,7 +1718,7 @@ static int construct_timeline_maps( remuxer_t *remuxer )
                     empty_edit.start_time = ISOM_EDIT_MODE_EMPTY;
                     empty_edit.rate       = ISOM_EDIT_MODE_NORMAL;
                     if( lsmash_create_explicit_timeline_map( output->root, out_track->track_ID, empty_edit ) )
-                        return ERROR_MSG( "failed to create a empty duration.\n" );
+                        return ERROR_MSG( "空白期間の作成に失敗しました。\n" );
                 }
                 if( remuxer->frag_base_track == 0 )
                     edit.duration = (out_track->last_sample_dts + out_track->last_sample_delta - in_track->skip_duration) * timescale_convert_multiplier;
@@ -1725,10 +1726,10 @@ static int construct_timeline_maps( remuxer_t *remuxer )
                     edit.duration = ISOM_EDIT_DURATION_IMPLICIT;
                 edit.rate = ISOM_EDIT_MODE_NORMAL;
                 if( lsmash_create_explicit_timeline_map( output->root, out_track->track_ID, edit ) )
-                    return ERROR_MSG( "failed to create a explicit timeline map.\n" );
+                    return ERROR_MSG( "明示的タイムラインマップの作成に失敗しました。\n" );
             }
             else if( lsmash_copy_timeline_map( output->root, out_track->track_ID, input[i].root, in_track->track_ID ) )
-                return ERROR_MSG( "failed to copy timeline maps.\n" );
+                return ERROR_MSG( "タイムラインマップのコピーに失敗しました。\n" );
         }
     out_movie->current_track_number = 1;
     return 0;
@@ -1776,16 +1777,16 @@ int main( int argc, char *argv[] )
         if( !strcasecmp( argv[i], "-i" ) || !strcasecmp( argv[i], "--input" ) )
             num_input++;
     if( !num_input )
-        return ERROR_MSG( "no input file specified.\n" );
+        return ERROR_MSG( "入力ファイルが指定されていません。\n" );
     output_t output = { 0 };
     input_t *input = lsmash_malloc_zero( num_input * sizeof(input_t) );
     if( !input )
-        return ERROR_MSG( "failed to allocate the input handler.\n" );
+        return ERROR_MSG( "インプットハンドラの割当に失敗しました。\n" );
     track_media_option **track_option = lsmash_malloc_zero( num_input * sizeof(track_media_option *) );
     if( !track_option )
     {
         lsmash_free( input );
-        return ERROR_MSG( "failed to allocate the track option handler.\n" );
+        return ERROR_MSG( "トラックオプションハンドラの割当に失敗しました。\n" );
     }
     remuxer_t remuxer =
     {
@@ -1808,19 +1809,19 @@ int main( int argc, char *argv[] )
         .dry_run                  = 0
     };
     if( parse_cli_option( argc, argv, &remuxer ) )
-        return REMUXER_ERR( "failed to parse command line options.\n" );
+        return REMUXER_ERR( "コマンドラインオプションのパースに失敗しました。\n" );
     if( prepare_output( &remuxer ) )
-        return REMUXER_ERR( "failed to set up preparation for output.\n" );
+        return REMUXER_ERR( "出力準備に失敗しました。\n" );
     if( remuxer.frag_base_track && construct_timeline_maps( &remuxer ) )
-        return REMUXER_ERR( "failed to construct timeline maps.\n" );
+        return REMUXER_ERR( "タイムラインマップの構築に失敗しました。\n" );
     if( do_remux( &remuxer ) )
-        return REMUXER_ERR( "failed to remux movies.\n" );
+        return REMUXER_ERR( "映像をremuxできませんでした。\n" );
     if( remuxer.frag_base_track == 0 && construct_timeline_maps( &remuxer ) )
-        return REMUXER_ERR( "failed to construct timeline maps.\n" );
+        return REMUXER_ERR( "タイムラインマップの構築に失敗しました。\n" );
     if( finish_movie( &remuxer ) )
-        return REMUXER_ERR( "failed to finish output movie.\n" );
+        return REMUXER_ERR( "映像の出力を完了できませんでした。\n" );
     REFRESH_CONSOLE;
-    eprintf( "%s completed!\n", !remuxer.dash || remuxer.subseg_per_seg == 0 ? "Remuxing" : "Segmentation" );
+    eprintf( "%s 完了!\n", !remuxer.dash || remuxer.subseg_per_seg == 0 ? "ReMux中" : "セグメンテーション中" );
     cleanup_remuxer( &remuxer );
     return 0;
 }
